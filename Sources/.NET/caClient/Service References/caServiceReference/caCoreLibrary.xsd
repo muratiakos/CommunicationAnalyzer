@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/caCoreLibrary" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/caCoreLibrary" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="caMessage">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="text" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="type" type="tns:caMessageType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="caMessage" nillable="true" type="tns:caMessage" />
+  <xs:simpleType name="caMessageType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Information" />
+      <xs:enumeration value="Warning" />
+      <xs:enumeration value="Error" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="caMessageType" nillable="true" type="tns:caMessageType" />
+  <xs:complexType name="ArrayOfcaMessage">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="caMessage" nillable="true" type="tns:caMessage" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfcaMessage" nillable="true" type="tns:ArrayOfcaMessage" />
+  <xs:complexType name="ArrayOfcaRelationAnalysisResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="caRelationAnalysisResult" nillable="true" type="tns:caRelationAnalysisResult" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfcaRelationAnalysisResult" nillable="true" type="tns:ArrayOfcaRelationAnalysisResult" />
+  <xs:complexType name="caRelationAnalysisResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="m_fromGroup" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_fromId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_fromName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_times" type="xs:int" />
+      <xs:element minOccurs="0" name="m_toGroup" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_toId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_toName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="caRelationAnalysisResult" nillable="true" type="tns:caRelationAnalysisResult" />
+  <xs:complexType name="ArrayOfcaFlowAnalysisResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="caFlowAnalysisResult" nillable="true" type="tns:caFlowAnalysisResult" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfcaFlowAnalysisResult" nillable="true" type="tns:ArrayOfcaFlowAnalysisResult" />
+  <xs:complexType name="caFlowAnalysisResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="m_commId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_fromId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_fromName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_previousCommId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_receivedTime" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="m_sentTime" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="m_subcommId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_toId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_toName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="caFlowAnalysisResult" nillable="true" type="tns:caFlowAnalysisResult" />
+  <xs:complexType name="ArrayOfcaTagParticipantAnalysisResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="caTagParticipantAnalysisResult" nillable="true" type="tns:caTagParticipantAnalysisResult" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfcaTagParticipantAnalysisResult" nillable="true" type="tns:ArrayOfcaTagParticipantAnalysisResult" />
+  <xs:complexType name="caTagParticipantAnalysisResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="m_fromGroup" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_fromId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_tagId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_times" type="xs:int" />
+      <xs:element minOccurs="0" name="m_toGroup" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_toId" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="caTagParticipantAnalysisResult" nillable="true" type="tns:caTagParticipantAnalysisResult" />
+  <xs:complexType name="caParticipant">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="m_addressList" nillable="true" type="tns:ArrayOfcaParticipantAddress" />
+      <xs:element minOccurs="0" name="m_foreignId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_groupList" nillable="true" type="tns:ArrayOfcaParticipant" />
+      <xs:element minOccurs="0" name="m_memberList" nillable="true" type="tns:ArrayOfcaParticipant" />
+      <xs:element minOccurs="0" name="m_name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_participantId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_primaryGroup" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_status" type="tns:caRecordStatus" />
+      <xs:element minOccurs="0" name="m_type" type="tns:caParticipantType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="caParticipant" nillable="true" type="tns:caParticipant" />
+  <xs:complexType name="ArrayOfcaParticipantAddress">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="caParticipantAddress" nillable="true" type="tns:caParticipantAddress" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfcaParticipantAddress" nillable="true" type="tns:ArrayOfcaParticipantAddress" />
+  <xs:complexType name="caParticipantAddress">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="m_address" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="m_category" type="tns:caCommCategory" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="caParticipantAddress" nillable="true" type="tns:caParticipantAddress" />
+  <xs:simpleType name="caCommCategory">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Unknown">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">-1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Email">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">0</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Voice">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Text">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="caCommCategory" nillable="true" type="tns:caCommCategory" />
+  <xs:complexType name="ArrayOfcaParticipant">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="caParticipant" nillable="true" type="tns:caParticipant" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfcaParticipant" nillable="true" type="tns:ArrayOfcaParticipant" />
+  <xs:simpleType name="caRecordStatus">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Unknown">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">-1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Registered">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">0</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Active">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="InActive">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Deleted">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="caRecordStatus" nillable="true" type="tns:caRecordStatus" />
+  <xs:simpleType name="caParticipantType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UserOrGroup">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">-1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="User">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">0</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Group">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="caParticipantType" nillable="true" type="tns:caParticipantType" />
+  <xs:complexType name="caTaggingRule">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Custom_Query" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Query" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RuleId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Status" type="tns:caRecordStatus" />
+      <xs:element minOccurs="0" name="Tag" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="caTaggingRule" nillable="true" type="tns:caTaggingRule" />
+  <xs:complexType name="ArrayOfcaTaggingRule">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="caTaggingRule" nillable="true" type="tns:caTaggingRule" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfcaTaggingRule" nillable="true" type="tns:ArrayOfcaTaggingRule" />
+</xs:schema>

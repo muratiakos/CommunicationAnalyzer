@@ -1,0 +1,192 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="caClient.caClientService" Collapsed="true">
+    <Position X="20.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAGAAAAICAAAAAAIAAgAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>caClientService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.caForm" Collapsed="true">
+    <Position X="22.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAEABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>caForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.FormMain">
+    <Position X="13.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>FKGhCkgAgCBAAAEICKi2YKISjERFgkAAAEgAAyBBREk=</HashCode>
+      <FileName>FormMain.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="conn" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="caClient.Program" Collapsed="true">
+    <Position X="26" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.Controls.ParticipantFillList" Collapsed="true">
+    <Position X="22.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAUEiAAAAAIAACAAAASAAAIAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Controls\ParticipantFillList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.Controls.ParticipantTable" Collapsed="true">
+    <Position X="24.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gYEBBABAgCBAgCAgAICAAACKCCBAAEAIAAQAQAAAwAA=</HashCode>
+      <FileName>Controls\ParticipantTable.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.Controls.SearchBasicForm" Collapsed="true">
+    <Position X="22.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAJAEAAAECAEAMAQABCAIAgCFACAAFAAAAiQEUQgQAA=</HashCode>
+      <FileName>Controls\SearchBasicForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.Forms.FormConnect" Collapsed="true">
+    <Position X="24.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAgQACAAABAAAAiCAACCAAQAAAICAEgAACAAAAI=</HashCode>
+      <FileName>Forms\FormConnect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.Forms.FormFlowAnalysis" Collapsed="true">
+    <Position X="26" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gEEAAASYAiAEABgAFAPFIhICGZYAGABiiAAAAgguAAE=</HashCode>
+      <FileName>Forms\FormFlowAnalysis.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.Forms.FormParticipant">
+    <Position X="16.5" Y="6" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AIIJACDBAyQpCJCcQACAOMVCOgZAg5AiBIABAAEQQBE=</HashCode>
+      <FileName>Forms\FormParticipant.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="conn" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="caClient.Forms.FormParticipantMgmt" Collapsed="true">
+    <Position X="20.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>kAAEAEAEACAABgwKAECAAAACEgQAACgAgAAAAAEAAAA=</HashCode>
+      <FileName>Forms\FormParticipantMgmt.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.Forms.FormParticipantRelationAnalysis" Collapsed="true">
+    <Position X="22.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AkpAAAQBCiAEAAEABAjACADKCBYAGAECggAANAgAIEA=</HashCode>
+      <FileName>Forms\FormParticipantRelationAnalysis.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.Forms.FormParticipantRelpaceTool" Collapsed="true">
+    <Position X="24.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAEAACAAABAAAACCIAgDIgQIAAAAAFAAAAAAAAA=</HashCode>
+      <FileName>Forms\FormParticipantRelpaceTool.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.Forms.FormParticipantSelector" Collapsed="true">
+    <Position X="26" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABQAAAAAGAAAAAABACAAACCAAAAAACAgACAAAAABBA=</HashCode>
+      <FileName>Forms\FormParticipantSelector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.Forms.FormTaggingRule">
+    <Position X="8.5" Y="18" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AIIJAAAEIySAAAASAADIKoUCAAQYAAAhAEAAAAEAIAA=</HashCode>
+      <FileName>Forms\FormTaggingRule.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="conn" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="caClient.Forms.FormTaggingRuleMgmt">
+    <Position X="0.5" Y="16" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AwAAAAIEACAAAAACAECAIAACEAQAAAAAAAAAAAEABAA=</HashCode>
+      <FileName>Forms\FormTaggingRuleMgmt.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="rules" />
+      <Field Name="conn" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="caClient.Forms.FormTagRelationAnalysis">
+    <Position X="8.5" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AkpAAAQBCiAEAAEABAjACADKCBYAGAECggAANAgAIEA=</HashCode>
+      <FileName>Forms\FormTagRelationAnalysis.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="conn" />
+      <Field Name="queryResults" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="caClient.Forms.FormTest" Collapsed="true">
+    <Position X="20.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAACAAAACAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Forms\FormTest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.Properties.Resources" Collapsed="true">
+    <Position X="20.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.Properties.Settings" Collapsed="true">
+    <Position X="24.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="caClient.caServiceReference.ServiceClient" BaseTypeListCollapsed="true">
+    <Position X="8.25" Y="11" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAgABGAEAAIAAAAEAAAAAIAAgAgiEAUABABAAAABAAA=</HashCode>
+      <FileName>Service References\caServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="System.Collections.Generic.List&lt;T&gt;" Collapsed="true">
+    <Position X="6.25" Y="9" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="System.Collections.Generic.List&lt;T&gt;.Enumerator" Collapsed="true">
+        <TypeIdentifier />
+        <Lollipop Position="0.2" />
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="caClient.caServiceReference.IService">
+    <Position X="1.5" Y="8.75" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAgABGAEAAIAAAAEAAAAAIAAgAgiEAUABABAAAABAAA=</HashCode>
+      <FileName>Service References\caServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="caClient.caServiceReference.IServiceChannel">
+    <Position X="2.75" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Service References\caServiceReference\Reference.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

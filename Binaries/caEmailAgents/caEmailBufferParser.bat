@@ -1,0 +1,1 @@
+java -jar caEmailBufferParser.jar -property caEmailBufferParser.settings -verbose

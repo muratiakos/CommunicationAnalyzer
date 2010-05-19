@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "caCoreLibrary", ".NET\caCoreLibrary\caCoreLibrary.csproj", "{9E8535CB-EBD6-423F-9F14-E78C54B8DFB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "caClient", ".NET\caClient\caClient.csproj", "{7BBF40E2-3BDE-4B7B-9D1B-36B5CA6E1321}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C71B82DB-457F-4771-991F-0C6AC094809C} = {C71B82DB-457F-4771-991F-0C6AC094809C}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "caServiceHost", ".NET\caServiceHost\caServiceHost.csproj", "{714B6284-61EC-490B-A4FF-AD34EEA848FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "caDataAccessLayer", ".NET\caDataAccessLayer\caDataAccessLayer.csproj", "{15DA69E9-60A1-4561-8C2E-570B59AF83DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "caGraphLibrary", ".NET\caGraphLibrary\caGraphLibrary.csproj", "{94579DB8-F972-4881-A49D-AA785584C23E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "caServiceLibrary", ".NET\caServiceLibrary\caServiceLibrary.csproj", "{C71B82DB-457F-4771-991F-0C6AC094809C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E8535CB-EBD6-423F-9F14-E78C54B8DFB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E8535CB-EBD6-423F-9F14-E78C54B8DFB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E8535CB-EBD6-423F-9F14-E78C54B8DFB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E8535CB-EBD6-423F-9F14-E78C54B8DFB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BBF40E2-3BDE-4B7B-9D1B-36B5CA6E1321}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BBF40E2-3BDE-4B7B-9D1B-36B5CA6E1321}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BBF40E2-3BDE-4B7B-9D1B-36B5CA6E1321}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BBF40E2-3BDE-4B7B-9D1B-36B5CA6E1321}.Release|Any CPU.Build.0 = Release|Any CPU
+		{714B6284-61EC-490B-A4FF-AD34EEA848FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{714B6284-61EC-490B-A4FF-AD34EEA848FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{714B6284-61EC-490B-A4FF-AD34EEA848FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{714B6284-61EC-490B-A4FF-AD34EEA848FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15DA69E9-60A1-4561-8C2E-570B59AF83DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15DA69E9-60A1-4561-8C2E-570B59AF83DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15DA69E9-60A1-4561-8C2E-570B59AF83DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15DA69E9-60A1-4561-8C2E-570B59AF83DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94579DB8-F972-4881-A49D-AA785584C23E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94579DB8-F972-4881-A49D-AA785584C23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94579DB8-F972-4881-A49D-AA785584C23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94579DB8-F972-4881-A49D-AA785584C23E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C71B82DB-457F-4771-991F-0C6AC094809C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C71B82DB-457F-4771-991F-0C6AC094809C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C71B82DB-457F-4771-991F-0C6AC094809C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C71B82DB-457F-4771-991F-0C6AC094809C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

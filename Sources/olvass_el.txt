@@ -1,0 +1,8 @@
+Java Mappa:
+	A Java források a NetBeans 6.8 projektjei
+
+.NET mappa:
+	Visual Studio 2008 források projektjei
+
+
+A .Net projektek megnyitásához a CommunicationAnalyzer Solution javasolt.
