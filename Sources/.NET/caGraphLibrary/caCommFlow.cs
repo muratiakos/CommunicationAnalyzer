@@ -10,16 +10,21 @@ using caCoreLibrary;
 
 namespace caGraphLibrary
 {
+	/// <summary>
+	/// Ügymenet elemzés ábrázolására szolgáló vezérlő osztály
+	/// </summary>
+
 	public partial class caCommFlow : UserControl
 	{
 
-		//Saját osztályok és typusok
+		//Node típusát leíró enumerációk
 		public enum caCommFlowNodeType
 		{
 			ParticipantNode,
 			CommItemNode
 		}
 
+		//Idő megjelenítési módok enumerációja
 		public enum caCommFlowTimeMode
 		{
 			Minute, // 1440
@@ -30,6 +35,7 @@ namespace caGraphLibrary
 			DateList //Csak adott dátumok listázásához
 		}
 
+		//Dátum lista módban az idő a vízszintes kooordinátáért felel
 		private class caCommFlowNodeTimeListItem
 		{
 			public DateTime m_timestamp;
@@ -37,13 +43,17 @@ namespace caGraphLibrary
 			public float m_left = 0;
 		}
 
+		//Egy csomópontot prezentáló osztály
 		private class caCommFlowNode
 		{
-			//Statikusok
+			//Statikus teljes dátumintervallumot leíró időjelölők
 			public static DateTime minDate = DateTime.MaxValue;
 			public static DateTime maxDate = DateTime.MinValue;
 
+			//Időlista elemei
 			public static List<caCommFlowNodeTimeListItem> timeList = new List<caCommFlowNodeTimeListItem>();
+
+			//Új dátum felvétele az időcache-be
 			public static caCommFlowNodeTimeListItem AddToCache(caCommFlowNodeTimeListItem _new)
 			{
 				caCommFlowNodeTimeListItem _old = null;
@@ -66,6 +76,7 @@ namespace caGraphLibrary
 				}
 			}
 
+			//Részidőegységek (fekete vonalak) a különböző időmódokban
 			public static int SmallScale(caCommFlowTimeMode _z)
 			{
 				int smallGrid = -1;
@@ -95,6 +106,7 @@ namespace caGraphLibrary
 				return smallGrid;
 			}
 
+			//Nagy léptékű időegységek (piros vonal) a különböző időmódokban
 			public static int BigScale(caCommFlowTimeMode _z)
 			{
 				int bigGrid = -1;
@@ -136,6 +148,8 @@ namespace caGraphLibrary
 			public caCommFlowNodeType m_nodeType = caCommFlowNodeType.ParticipantNode;
 
 			//Propertyk
+
+			//Kommunikációs elem azonosítója propertyként - null esetében ""
 			public String RawId
 			{
 				get { return m_rawId; }
@@ -146,6 +160,7 @@ namespace caGraphLibrary
 				}
 			}
 
+			//Kommunikáció időbélyege
 			public DateTime TimeStamp
 			{
 				get { return m_timestamp; }
@@ -160,6 +175,8 @@ namespace caGraphLibrary
 					m_timeItem = AddToCache(t);
 				}
 			}
+
+			//Csomópont középpontját számítő függvény
 			public PointF CenterPoint
 			{
 				get { return new PointF(m_p.X + Margin, m_p.Y + Margin); }
@@ -169,13 +186,13 @@ namespace caGraphLibrary
 			public int Height { get; set; }
 
 
-			//KOnstruktor
+			//Konstruktor
 			public caCommFlowNode()
 			{
 				Margin = 5;
 			}
-			//Metódusok
 
+			//Koordinátákat számító függvény az időpont alapján és az időmódnak megfelelően
 			public double GetXByTimestamp(caCommFlowTimeMode _z)
 			{
 				TimeSpan d = m_timestamp - caCommFlowNode.minDate;
@@ -206,6 +223,8 @@ namespace caGraphLibrary
 
 				return dx;
 			}
+
+			//Pozíció beállítása és függőleges eltolás függvénye - a bővülő fastruktúra kirajzolására
 			public int SetPositionsAndGetNewY(double _y, caCommFlowTimeMode _z, int depth)
 			{
 				//Alsó szintenként kis eltolás
@@ -218,6 +237,7 @@ namespace caGraphLibrary
 
 				int db = 1;
 				int fullHeight = m_defaultSize;
+				//Teljes méret növelése a germekek méretei és pozíciói alapján
 				foreach (caCommFlowNode c in this.m_children)
 				{
 					fullHeight += db * c.SetPositionsAndGetNewY(_y + db * m_defaultSize, _z, depth + db);
@@ -229,6 +249,7 @@ namespace caGraphLibrary
 				return fullHeight; // + Margin *2;
 			}
 
+			//Csaomópontot kirajzoló eljárás
 			public void DrawMe(Graphics _g, Pen _p, Brush _b)
 			{
 				//_g.DrawEllipse(_p, m_p.X, m_p.Y, m_defaultSize/3, m_defaultSize/3);
@@ -249,6 +270,7 @@ namespace caGraphLibrary
 
 			}
 
+			//A csomópontot és gyermek nodejait kirajzoló eljárás
 			public void DrawAll(Graphics _g, Pen _p, Brush _b)
 			{
 				foreach (caCommFlowNode child in this.m_children)
@@ -264,6 +286,7 @@ namespace caGraphLibrary
 
 			}
 
+			//Egérmutató érzékelése a csomóponton
 			public bool HitTest(float x, float y)
 			{
 				if (
@@ -276,10 +299,13 @@ namespace caGraphLibrary
 			}
 		}
 
+		//CSomópontok listáját leíró osztály
 		private class caCommFlowNodeList : List<caCommFlowNode>
 		{
+			//Csomópont gyorsítótár
 			public static caCommFlowNodeList cache_fnl = new caCommFlowNodeList();
 
+			//Csak az újdonságot tartalmazóakat ábrázoljuk
 			public caCommFlowNode AddIdentical(caCommFlowNode _new)
 			{
 				caCommFlowNode _old = null;
@@ -305,7 +331,7 @@ namespace caGraphLibrary
 							delegate(caCommFlowNode fn)
 							{
 								return (!String.IsNullOrEmpty(fn.m_rawId) && fn.m_rawId.Equals(_new.m_rawId));
-										//|| (String.IsNullOrEmpty(fn.m_rawId) && fn.m_timestamp.Equals(_new.m_timestamp) && fn.m_parent == null);
+								//|| (String.IsNullOrEmpty(fn.m_rawId) && fn.m_timestamp.Equals(_new.m_timestamp) && fn.m_parent == null);
 							});
 
 						//if (String.IsNullOrEmpty(_old.m_rawId) && _old.m_parent!=null) _old = _old.m_parent;
@@ -320,7 +346,7 @@ namespace caGraphLibrary
 				else
 				{
 					//this.Add(_old);
-					
+
 					return _old;
 				}
 			}
@@ -346,12 +372,14 @@ namespace caGraphLibrary
 
 
 		//Propertyk
+		//Kommunikációs modell propertyje
 		public caSubCommItemObjectList CommList
 		{
 			get { return m_ciol; }
 			set { m_ciol = value; }
 		}
 
+		//Időmód beállítása
 		public caCommFlowTimeMode TimeMode
 		{
 			get { return m_timeMode; }
@@ -364,6 +392,7 @@ namespace caGraphLibrary
 			}
 		}
 
+		//Csomópont mód
 		public caCommFlowNodeType NodeMode
 		{
 			get { return m_nodeMode; }
@@ -374,11 +403,12 @@ namespace caGraphLibrary
 			}
 		}
 
+		//Konstruktor
 		public caCommFlow()
 		{
 			InitializeComponent();
 
-			//Time Mode
+			//Time Mode-ok beállítása a vezértlőkön
 			caGlobalListItem glMin = new caGlobalListItem("Minutes", caCommFlowTimeMode.Minute);
 			caGlobalListItem glHour = new caGlobalListItem("Hours", caCommFlowTimeMode.Hour);
 			caGlobalListItem glDay = new caGlobalListItem("Days", caCommFlowTimeMode.Day);
@@ -398,6 +428,7 @@ namespace caGraphLibrary
 			cb_timemode.DisplayMember = "Display";
 			cb_timemode.ValueMember = "Value";
 
+			//Alapértelmezésben a dátumlista
 			TimeMode = caCommFlowTimeMode.DateList;
 
 			//Node MOde
@@ -412,6 +443,7 @@ namespace caGraphLibrary
 			cb_nodemode.DisplayMember = "Display";
 			cb_nodemode.ValueMember = "Value";
 
+			//Alapértelmezésben üzenetek
 			NodeMode = caCommFlowNodeType.CommItemNode;
 
 			GenerateGraph();
@@ -419,6 +451,7 @@ namespace caGraphLibrary
 
 		}
 
+		//Gráf generálása kommunikációs modellből
 		public void GenerateGraph()
 		{
 			//Dátum szerint rendezve
@@ -433,8 +466,9 @@ namespace caGraphLibrary
 			m_flowRoots.Clear();
 			caCommFlowNodeList.cache_fnl.Clear();
 
-			if (NodeMode == caCommFlowNodeType.ParticipantNode) //Résztvevők megjelenítése
+			if (NodeMode == caCommFlowNodeType.ParticipantNode) //Résztvevők megjelenítése mód
 			{
+				//MInden modellelemen végigmegyünk
 				foreach (caSubCommItemObject ci in m_ciol)
 				{
 					caCommFlowNode fromNode = new caCommFlowNode()
@@ -468,7 +502,7 @@ namespace caGraphLibrary
 					toParentNode.m_children.Add(toNode);
 				}
 			}
-			else if (NodeMode == caCommFlowNodeType.CommItemNode) //Levelek megjelenítése
+			else if (NodeMode == caCommFlowNodeType.CommItemNode) //Levelek megjelenítése mód
 			{
 				foreach (caSubCommItemObject ci in m_ciol)
 				{
@@ -513,14 +547,16 @@ namespace caGraphLibrary
 				});
 		}
 
+		//Gráf kirajzolása
 		public void DrawGraph()
 		{
-
+			//TODO: vászonra rajzolni és azt kitenni
 			Pen penBlack = new Pen(Color.Black, 2);
 			Pen penGray = new Pen(Color.Gray, 1);
 			Pen penRed = new Pen(Color.Red, 2);
 
 
+			//Rácsozás beállítása
 			if (m_flowRoots.Count > 0)
 			{
 				//Alapértékek
@@ -636,14 +672,17 @@ namespace caGraphLibrary
 			//myCanvas.Image = m_Bitmap;
 		}
 
+		//Újrarajzolás
 		public void RepaintGraph()
 		{
+			//TODO: csak canvas újrarajzolás kellene
 			//myCanvas.Image = m_Bitmap;
 			//myCanvas.Update();
 			//myCanvas.Refresh();
 			DrawGraph();
 		}
 
+		//Átállás az új időábrázolási módra
 		private void cb_zoom_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			object v = cb_timemode.SelectedValue;
@@ -652,6 +691,7 @@ namespace caGraphLibrary
 			DrawGraph();
 		}
 
+		//Csúszka mozgatás - ájtrarajzolás
 		private void scroll_panel_Paint(object sender, PaintEventArgs e)
 		{
 			RepaintGraph();
@@ -682,6 +722,7 @@ namespace caGraphLibrary
 			RepaintGraph();
 		}
 
+		//Egér események figyelése -> melyik node van a kurzor alatt
 		private void myCanvas_MouseMove(object sender, MouseEventArgs e)
 		{
 			m_selected = null;
@@ -691,6 +732,7 @@ namespace caGraphLibrary
 				{
 					m_selected = fn;
 
+					//Kiírni az idikátor szövegdobozba a nevét
 					if (fn.m_nodeType == caCommFlowNodeType.ParticipantNode)
 					{
 						lb_info.Text = fn.m_participant.m_name + " - " + fn.m_timestamp.ToString();
@@ -704,6 +746,7 @@ namespace caGraphLibrary
 			}
 		}
 
+		//CSomópont mgejelnítés váltása listából
 		private void cb_nodemode_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			object v = cb_nodemode.SelectedValue;

@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 
 namespace caCoreLibrary
 {
+	//RendszerÜzenet osztály típusait tartalmazó enumeráció
 	public enum caMessageType
 	{
 		Information,
@@ -11,6 +12,9 @@ namespace caCoreLibrary
 		Error
 	}
 
+	/// <summary>
+	/// RendszerÜzenetet megvalósító osztály kliens, szerver és hálózati üzenethordozáshoz
+	/// </summary>
 	[DataContract]
 	public class caMessage
 	{
@@ -22,10 +26,18 @@ namespace caCoreLibrary
 		public string text = "Nothing";
 	}
 
+	/// <summary>
+	/// RendszerÜzenetezelő modul
+	/// RendszerÜzenetek fogadása, lekérdezése és eseménykezelése
+	/// </summary>
 	public class caMessageService
 	{
+		//Új üzenet eseménykezelője
 		public static event EventHandler NewMessage;
+		//Mg le nem kérdezett üzenetek várakozási sora
 		public static List<caMessage> messageQueue = new List<caMessage>();
+
+		//Új üzenet hozzáadása a várakozási sorhoz
 		public static void Add(caMessage m)
 		{
 			messageQueue.Add(m);
@@ -35,6 +47,8 @@ namespace caCoreLibrary
 			}
 			catch { }
 		}
+
+		//Kivétel, mint hiba hozzáadása a várakozási sorhoz egy adott modulból
 		public static void AddException(string module, Exception ex)
 		{
 			caMessage m = new caMessage()
@@ -47,6 +61,7 @@ namespace caCoreLibrary
 			Add(m);
 		}
 
+		//Általános kivétel, mint hiba felvétele az üzenetsorba
 		public static void AddException(Exception ex)
 		{
 			AddException(ex.GetType().ToString(), ex);

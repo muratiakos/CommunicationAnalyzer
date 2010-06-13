@@ -6,7 +6,7 @@ import java.io.Reader;
 import java.util.Properties;
 
 /**
- * <h2>Email Parser osztály</h2>
+ * <h2>Email Buffer Parser osztály</h2>
  * <p>Ez az osztály felel a puffer  táblában lévő, még feldolgozatlan levelek parsolásáért, felbontásáért, a
  * feladók, címzettek és csoportok adatbázisisból történő beazonosításáért, valamint a levelek tartalmának és
  * szöveges csatolmányainak összesítéséért. </p>

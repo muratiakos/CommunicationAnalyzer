@@ -6,30 +6,36 @@ using System.Runtime.Serialization;
 
 namespace caCoreLibrary
 {
+	//Globális listaelem osztály megjelenítésekhez, gyórsítótárakhoz és előre generált listákhoz
 	[DataContract]
 	public class caGlobalListItem
 	{
-		//Statikusok
-		//függvények kellenek listákhoz
+		//Statikus listaelemek listákhoz és szűrésekhez
+
+		//Rekordstátusz
 		public static caGlobalListItem syncUnknown = new caGlobalListItem("sync", "Any state", caObjectState.Unknown);
 		public static caGlobalListItem syncNo = new caGlobalListItem("sync", "Not Syncronized", caObjectState.NotSyncronized);
 		public static caGlobalListItem syncYes = new caGlobalListItem("sync", "Syncronized", caObjectState.Syncronized);
 
+		//ObjektumStátusz
 		public static caGlobalListItem rsUnknown = new caGlobalListItem("RS", "Any state", caRecordStatus.Unknown);
 		public static caGlobalListItem rsRegistered = new caGlobalListItem("RS", "Registered", caRecordStatus.Registered);
 		public static caGlobalListItem rsActive = new caGlobalListItem("RS", "Active", caRecordStatus.Active);
 		public static caGlobalListItem rsInactive = new caGlobalListItem("RS", "Inactive", caRecordStatus.InActive);
 		public static caGlobalListItem rsDeleted = new caGlobalListItem("RS", "Deleted", caRecordStatus.Deleted);
 
+		//Csatorna kódok
 		public static caGlobalListItem c_All = new caGlobalListItem("CATEGORY", "Any category", caCommCategory.Unknown);
 		public static caGlobalListItem c_Email = new caGlobalListItem("CATEGORY", "E-mail", caCommCategory.Email);
 		public static caGlobalListItem c_Voice = new caGlobalListItem("CATEGORY", "Voice", caCommCategory.Voice);
 		public static caGlobalListItem c_Text = new caGlobalListItem("CATEGORY", "Text", caCommCategory.Text);
 
+		//Kézbesítési módok
 		public static caGlobalListItem sc_Email_To = new caGlobalListItem("SUBCATEGORY", "TO", caCommSubCategory.TO, ((int)caCommCategory.Email).ToString());
 		public static caGlobalListItem sc_Email_Cc = new caGlobalListItem("SUBCATEGORY", "CC", caCommSubCategory.CC, ((int)caCommCategory.Email).ToString());
 		public static caGlobalListItem sc_Email_Bcc = new caGlobalListItem("SUBCATEGORY", "BCC", caCommSubCategory.BCC, ((int)caCommCategory.Email).ToString());
 
+		//Felhasználó típusok
 		public static caGlobalListItem pt_ParticipantType_Both = new caGlobalListItem("PARTICIPANTTYPE", "Users and Groups", caParticipantType.UserOrGroup);
 		public static caGlobalListItem pt_ParticipantType_User = new caGlobalListItem("PARTICIPANTTYPE", "User", caParticipantType.User);
 		public static caGlobalListItem pt_ParticipantType_Group = new caGlobalListItem("PARTICIPANTTYPE", "Group", caParticipantType.Group);
@@ -45,7 +51,7 @@ namespace caCoreLibrary
 		[DataMember]
 		public string m_parentValue = null;
 
-		//Propertyk
+		//Propertyk - Megjelenítés és tárolás
 		public string Display { get { return m_name; } }
 		public object Value { get { return m_value; } }
 
@@ -68,9 +74,13 @@ namespace caCoreLibrary
 			m_parentValue = _parentValue;
 		}
 	}
+
+	//Globális lista osztályok
 	public class caGlobalList : List<caGlobalListItem>
 	{
-		//Statikusok
+		//Statikusok listák
+
+		//Rekordstátusz
 		public static caGlobalList RecordStates(string unknown)
 		{
 			caGlobalList gl = new caGlobalList();
@@ -81,6 +91,8 @@ namespace caCoreLibrary
 			gl.Add(caGlobalListItem.rsDeleted);
 			return gl;
 		}
+
+		//Objektumstátusz
 		public static caGlobalList SyncStates(string unknown)
 		{
 			caGlobalList gl = new caGlobalList();
@@ -90,6 +102,7 @@ namespace caCoreLibrary
 			return gl;
 		}
 
+		//Csatornák
 		public static caGlobalList CategoryList(string unknown)
 		{
 			caGlobalList gl = new caGlobalList();
@@ -100,6 +113,7 @@ namespace caCoreLibrary
 			return gl;
 		}
 
+		//Kézbesítési módok
 		public static caGlobalList SubcategoryList(string unknown)
 		{
 			caGlobalList gl = new caGlobalList();
@@ -110,6 +124,7 @@ namespace caCoreLibrary
 			return gl;
 		}
 
+		//Résztvevő típus
 		public static caGlobalList ParticipantTypeList(string unknown)
 		{
 			caGlobalList gl = new caGlobalList();
@@ -119,6 +134,7 @@ namespace caCoreLibrary
 			return gl;
 		}
 
+		//Lista lekérdezése a globális listahalomból
 		public caGlobalListItem GetList(string _listId)
 		{
 			return this.Find(
@@ -132,6 +148,7 @@ namespace caCoreLibrary
 				});
 		}
 
+		//Adott szülőhöz tartozó lista lekérdezése
 		public caGlobalListItem GetListWithParent(string _listId, string _parentValue)
 		{
 			return this.Find(

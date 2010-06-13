@@ -2,9 +2,10 @@
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 
-
+//Résztvevővel kapcsolatos osztályok és eljárársok modulja
 namespace caCoreLibrary
 {
+	//Résztvevő típusok enumerációja
 	public enum caParticipantType
 	{
 		UserOrGroup = -1,
@@ -12,6 +13,7 @@ namespace caCoreLibrary
 		Group = 1
 	}
 
+	//Résztvevő típus osztály
 	[DataContract]
 	public class caParticipant
 	{
@@ -43,6 +45,7 @@ namespace caCoreLibrary
 			m_primaryGroup = "G0";
 		}
 
+		//Másoló konstruktor
 		public caParticipant(caParticipant _p)
 			: this()
 		{
@@ -58,7 +61,7 @@ namespace caCoreLibrary
 			}
 		}
 
-		//Userek definiálása
+		//Egyszerű felhasználó konstruktor
 		public caParticipant(String _id, String _name)
 			: this()
 		{
@@ -66,7 +69,7 @@ namespace caCoreLibrary
 			m_name = _name;
 		}
 
-		//Csoportok definiálására
+		//Egyszerű Csoportok definiáló konstruktor
 		public caParticipant(String _id, String _name, caParticipantType _pt)
 			: this(_id, _name)
 		{
@@ -74,6 +77,7 @@ namespace caCoreLibrary
 		}
 	}
 
+	//Résztvevő elérését prezentáló osztály
 	[DataContract]
 	public class caParticipantAddress
 	{
@@ -84,9 +88,11 @@ namespace caCoreLibrary
 	}
 
 
+	//Résztvevő objektum osztálya megjelenést támogató funkciókkal
 	public class caParticipantObject : caParticipant
 	{
 		//Statikus
+		//Ismeretlen csoport, mint statikus elem
 		public static caParticipantObject UnknownGroup = new caParticipantObject("G0", "Unknown Group", caParticipantType.Group);
 
 
@@ -109,6 +115,7 @@ namespace caCoreLibrary
 		public string Primary_Group { get { return m_primaryGroup; } }
 		public caObjectState Sync_Status { get { return m_objectState; } }
 
+		//RÉsztvevő csoportjai
 		public caParticipantObjectList GroupList
 		{
 			get
@@ -126,6 +133,8 @@ namespace caCoreLibrary
 				m_groupList = value;
 			}
 		}
+
+		//Résztvevő tagjai
 		public caParticipantObjectList MemberList
 		{
 			get
@@ -183,6 +192,8 @@ namespace caCoreLibrary
 			m_status = _po.m_status;
 			m_type = _po.m_type;
 		}
+
+		//Obejktumból sima résztvevő példány kinyerése
 		public caParticipant GetParticipant()
 		{
 			return new caParticipant()
@@ -198,6 +209,7 @@ namespace caCoreLibrary
 			};
 		}
 
+		//Nézet váltás csoport és személy között
 		public void ShowAs(caParticipantType _pt)
 		{
 			if (m_showAs != _pt) //Ha már nem lett beállítva egyszer erre a felhasználóra
@@ -233,16 +245,17 @@ namespace caCoreLibrary
 			}
 		}
 
+		//Egyszerű megjelnítéshez
 		public override String ToString()
 		{
 			return String.Format("{0} \n ({1})", m_name, m_participantId);
 		}
 	}
 
-
+	//Résztvevő objektumok listája
 	public class caParticipantObjectList : List<caParticipantObject>
 	{
-		//Globális cache
+		//Globális gyorsítótár
 		public List<caParticipantObject> localCache = new List<caParticipantObject>();
 
 		//Konstruktorok
@@ -257,10 +270,8 @@ namespace caCoreLibrary
 				}
 			}
 		}
+
 		//Eljárások
-
-		//Add - agyatlan bepakolás
-
 		//Add and cache - Globális cache építése és ha már bennevan, akkor a referenciát szúrjuk be mégegyszer
 		public caParticipantObject AddAndCache(caParticipantObject _new)
 		{
@@ -287,6 +298,7 @@ namespace caCoreLibrary
 			}
 		}
 
+		//Lekérdezi, hogy egy adott azonosítójú résztvevő már szerepel-e a lsitában
 		public caParticipantObject IsIn(String _po)
 		{
 			caParticipantObject _old = null;
@@ -327,6 +339,7 @@ namespace caCoreLibrary
 			}
 		}
 
+		//Egyszerű résztvevőlista visszaadása
 		public List<caParticipant> GetParticipantList()
 		{
 			List<caParticipant> pl = new List<caParticipant>();
@@ -337,6 +350,7 @@ namespace caCoreLibrary
 			return pl;
 		}
 
+		//Résztvevők azonosítóinak visszaadása listaként
 		public List<String> GetParticipantStringList()
 		{
 			List<String> pl = new List<String>();

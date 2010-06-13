@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+//Résztvevők kapcsolatainak leíró osztályainak modulja
 namespace caCoreLibrary
 {
 	public class caIndirectRelation
 	{
+		//Kapcsolattípusok enumerációja
 		public enum caRelationType
 		{
 			UserToUser,
@@ -50,6 +52,7 @@ namespace caCoreLibrary
 			}
 		}
 
+		//Kapcsolattítpus visszaadása a feladó és címzett között
 		public caRelationType getRelationType
 		{
 			get
@@ -67,6 +70,7 @@ namespace caCoreLibrary
 			}
 		}
 
+		//A feladó és címzett között az össszes lehetséges kapcsolat visszaadása
 		public static List<caIndirectRelation> getIndirectRelation(caParticipantObject _from, caParticipantObject _to)
 		{
 			List<caIndirectRelation> ir = new List<caIndirectRelation>();

@@ -12,17 +12,19 @@ using caClient.caServiceReference;
 
 namespace caClient.Forms
 {
+	//Résztvevő tulajdonságok kliens oldali ablaka
 	public partial class FormParticipant : Form
 	{
-		//Eseménykezelők
+		//Eseménykezelők a változások kezelésére
 		public event EventHandler ObjectChanged;
 		private bool changed = false;
 
-		//Változók
+		//Résztevő objektuma
 		internal caParticipantObject m_po = new caParticipantObject();
+		//Kapcsolat objektum
 		internal ServiceClient conn = null;
 
-
+		//Konstruktor
 		public FormParticipant()
 		{
 			InitializeComponent();
@@ -48,6 +50,7 @@ namespace caClient.Forms
 			RefreshUI();
 		}
 
+		//Résztvevő betöltésekor meghívott konstruktor
 		public FormParticipant(caParticipantObject _po)
 			: this()
 		{
@@ -56,6 +59,7 @@ namespace caClient.Forms
 			RefreshUI();
 		}
 
+		//Felület frissítése
 		public void RefreshUI() { RefreshUI(m_po); }
 		public void RefreshUI(caParticipantObject po)
 		{
@@ -83,6 +87,7 @@ namespace caClient.Forms
 
 		}
 
+		//Résztvevő objketum kinyerése a felületen beállítottak alapján
 		public caParticipantObject GetParticipantObject()
 		{
 			caParticipantObject po = new caParticipantObject();
@@ -106,16 +111,19 @@ namespace caClient.Forms
 			return po;
 		}
 
+		//Bezárás
 		private void btClose_Click(object sender, EventArgs e)
 		{
 			this.Close();
 		}
 
+		//Módosítások visszaállítása
 		private void btReload_Click(object sender, EventArgs e)
 		{
 			Revert();
 		}
 
+		//Mentés - küldés a szervere
 		private void btSave_Click(object sender, EventArgs e)
 		{
 			caParticipantObject po = GetParticipantObject();
@@ -124,12 +132,14 @@ namespace caClient.Forms
 			this.Close();
 		}
 
+		//Résztvevő újratöltése a szerverről és felület beállítása
 		private void Revert()
 		{
 			caClientService.LoadParticipantObject(conn, m_po);
 			RefreshUI();
 		}
 
+		//Ablak bezárásakor, ha valami változott, akkor azt visszaküldjük a meghívónak az azonnali frissítéshez - őjratöltés nélkül
 		private void FormParticipant_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			try
@@ -139,11 +149,13 @@ namespace caClient.Forms
 			catch { }
 		}
 
+		//Ha töltődik az oldal, akkor letölteni újra az objektumot - Ne cache-ből mutassuk az adatlapot
 		private void FormParticipant_Load(object sender, EventArgs e)
 		{
 			Revert();
 		}
 
+		//Elérési lista beállítása
 		private void SetAddressList(List<caParticipantAddress> al)
 		{
 			lvAddressList.Clear();
@@ -157,6 +169,7 @@ namespace caClient.Forms
 			}
 		}
 
+		//Elérési lista lekérdezése
 		private List<caParticipantAddress> GetAddressList()
 		{
 			List<caParticipantAddress> al = new List<caParticipantAddress>();
@@ -180,17 +193,20 @@ namespace caClient.Forms
 			if (!String.IsNullOrEmpty(a.m_address)) lvAddressList.Items.Add(new ListViewItem() { Tag = a, Text = a.m_address, ImageIndex = (int)a.m_category });
 		}
 
+		//Elérés törlése
 		private void btAddrRemove_Click(object sender, EventArgs e)
 		{
 			if (lvAddressList.SelectedItems.Count > 0) lvAddressList.Items.Remove(lvAddressList.SelectedItems[0]);
 		}
 
+		//CSerélő eszköz indítása a résztvevőre
 		private void btToolReplace_Click(object sender, EventArgs e)
 		{
 			caForm.OpenParticipantReplaceTool(conn, m_po);
 			this.Close();
 		}
 
+		//Elsődleges csoport megadása
 		private void btSetPrimaryGroup_Click(object sender, EventArgs e)
 		{
 			caParticipantObject p = pflGroups.Selected;

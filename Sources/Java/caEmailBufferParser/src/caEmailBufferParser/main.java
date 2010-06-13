@@ -4,23 +4,23 @@ import java.util.*;
 import java.io.*;
 
 /**
- * Parszoló komponens indításáért felel
- * @author makos
+ * Puffer táblában várakozó e-mailek foldolgozásáért felelős projekt
+ * @author Muráti Ákos
  */
 public class main {
 
     static boolean verbose = false;
 
     /**
-     * <p>Az EmailParser indító függvénye, ez példányosítja ParseMailBuffer-t
+     * <p>Az caEmailBufferParser indító függvénye, ez példányosítja ParseMailBuffer
      * osztályt a parancssori paraméterek és beolvasott beállítások alapján.</p>
      *
      * <h2>Parancssori paraméterek</h2>
      * <ul>
      *  <li>-property [fájlnév] : megadott fájlnevű property fájl beolvasása és alkalmazása</li>
-     *  <li>-folder [mappa]: a megadott mappában található fájlok beolvasása</li>
+     *  <li>-verbose: beszédes mód statisztikai és vezérlési információk kiíratásához</li>
      * </ul>
-     * <p>A parancssorban megadott beállítások a legerősebbek, vagyis felülbírálják a property fájlok és az alapértelmezett
+     * <p>A parancssorban megadott beállítások felülbírálják a property fájlok és az alapértelmezett
      * beállításokat</p>
      *
      * <pre>
@@ -41,11 +41,12 @@ public class main {
         pd.setProperty("db_pass", "ema_admin");
         pd.setProperty("mail_select", "SELECT * FROM CAD_RAWDATA WHERE STATUS=0 AND CATEGORY=0");
 
+        //Kezdeti időpillanat lekérdezése
         Calendar cal = Calendar.getInstance();
         Properties pf = new Properties(pd);
         String property_file = null;
 
-        //Argumentumok feldolgozasa
+        //Parancssor argumentumok feldolgozasa
         int i = 0;
         for (i = 0; i < aArgs.length; i++) {
             if (aArgs[i].equals("-property")) {
@@ -80,10 +81,11 @@ public class main {
         cal = Calendar.getInstance();
         long tStart = cal.getTimeInMillis();
 
-        //Importer példányosítása
+        //Feldolgozó osztály példányosítása
         ParseMailBuffer mb = new ParseMailBuffer(pf);
         int rV = mb.Process();
 
+        //Feldolgozás befejezésének lekérdezése és idő delta számítása
         cal = Calendar.getInstance();
         long tStop = cal.getTimeInMillis();
         tStop -= tStart;
@@ -93,7 +95,7 @@ public class main {
     }
 
     /**
-     * Kiíratást végző függvény, rövidebb, mint a System.out.pr :)
+     * Kiíratást végző függvény, rövidebb, mint a System.out.pr... :)
      * @param _out
      */
     public static void P(String _out) {

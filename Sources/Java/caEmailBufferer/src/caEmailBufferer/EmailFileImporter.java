@@ -8,38 +8,14 @@ import java.sql.PreparedStatement;
 /**
  * <h2>EmailFileImporter osztály</h2>
  * <p>Ez az osztály végzi a megadott mappában található e-mail fájlok beolvasását és
- * beszúrását az átmeneti MAIL_BUFFER adatbázis táblába.</p>
+ * beszúrását az átmeneti CAD_RAWDATA adatbázis táblába.</p>
  *
- * <p>Az main osztálytól kapott beállítások alapján a megadott mappábából
- * az mbox típusú email fájlok tartalmát beolvasás után az alapértelmezett vagy megadott beállításoknak
- * megfelelően beszúrja a MAIL_BUFFER táblába, amennyiben az még nem szerepel benne.
- * Beszúráskor az elsődleges kulcs a teljes fájl tartalma alapján számítódik ki md5 hash algoritmus alapján,
- * mellyel ?elkerülhető? a levelek többszörös feldolgozása is.
+ * <p>A main osztálytól kapott beállítások alapján a megadott mappábából
+ * a szabványos Internet Message formátumban lévő email fájlok tartalmát beolvasás után az alapértelmezett
+ * vagy megadott beállításoknak megfelelően beszúrja az CAD_RAWDATA táblába, amennyiben az még nem szerepel benne.
+ * A duplikáció megakadályozását az adatbázisra bízzuk, az üzenet tartalmából generált MD5 hash egyedi megkötését felhasználva.
+ * Az üzenet tartalma egy az egyben a DATA CLOB típuső mezőbe kerül beírásra feldolgozásra váró státtuszjelzéssel (status=0)
  * </p>
- *
- * <h2>Kérdések</h2>
- * <ul>
- * <li>Mi legyen a már feldolgozott fájlokkal? - <br /> Töröljük őket, átnevezzük?</li>
- * <li>Autocommit maradjon?</li>
- * </ul>
- * <h2>Felvetés</h2>
- * <ul>
- * <li>A fájlok tartalmának beolvasásának sebességét esetlegesen még lehet javítani, ha a reader objektumok
- * alapból CLOB-ba teszik a beolvasott értékeket. Érdemes szétnézni, mi lehet még gyorsabb</li>
- * <li>Érdemes lenne-e eleve az Oracle Datapump fájlstrukturájába felépíteni az inserteket?</li>
- * <li>Valamiféle service-ekkel vezérelhetővé kellene tenni - EJB - köv félévre felvéve szakmaiként</li>
- * </ul>
- *
- *  <h2>Puffer tábla</h2>
- * <pre>
- *  CREATE TABLE "MAIL_BUFFER"
- *  (
- *      "BUFFERID" VARCHAR2(500 BYTE) NOT NULL ENABLE,
- *      "MAIL" CLOB,
- *      "PROCESSED" NUMBER(1,0),
- *      CONSTRAINT "MAIL_BUFFER_PK" PRIMARY KEY ("BUFFERID")
- *  );
- * </pre>
  */
 public class EmailFileImporter {
 
@@ -51,15 +27,8 @@ public class EmailFileImporter {
 
     /**
      * A beállításokban megadott mappában találhatő összes fájlt listába gyűjti, majd
-     * ezen a listán egyenként végighaladva beolvassa annak tartalmát, amit beszúr a csatlakozási paraméterekben
-     * megadott adatbázisban lévő MAIL_BUFFER táblába a tartalomból generált md5 hash alapján.
-     * A beszúrt rekordok feldolgozásra váró státusszal kerülnek felvételre.
+     * ezen a listán egyenként végighaladva beolvassa annak tartalmát, amit a fentieknek megfelelően beszúr a puffertáblába.
      * </p>
-     *
-     * <p>A beszúráskor nincs külön ellenőrzés, ha az md5 kulcs nem egyedi, az adatbázis megkötése miatt
-     * az a rekord alapból el lesz dobva.</p>
-     *
-     *
      */
     public int Import(boolean deletePuffered) {
         int rV = 1;
@@ -82,7 +51,7 @@ public class EmailFileImporter {
             ps = conn.prepareStatement(p.getProperty("mail_insert", "INSERT INTO CAD_RAWDATA (BUFFER_ID, DATA, STATUS) VALUES ( ?, ?, 0)"));
 
         } catch (Exception e) {
-            //bármi adatbázis vagy hiba esetén kilépünk
+            //bármilyen adatbázis vagy hiba esetén kilépünk
             if (V()) {
                 P("~ERROR: Database Connect Failed");
                 e.printStackTrace();
@@ -91,7 +60,7 @@ public class EmailFileImporter {
             return rV;
         }
 
-        //Fájlista felépítése
+        //Fájlista felépítése mail_folder beállítás alapján
         try {
             File startingDirectory = new File(p.getProperty("mail_folder"));
             files = FileListing.getFileListing(startingDirectory);
@@ -158,7 +127,7 @@ public class EmailFileImporter {
     }
 
     /**
-     * <p>Ez a függvény olvassa be a paraméterként átadott mbox formátumú email fájl
+     * <p>Ez a függvény olvassa be a paraméterként átadott Internet Message formátumú email fájl
      * tartalmát, melyet Stringként ad vissza.
      * </p>
      *

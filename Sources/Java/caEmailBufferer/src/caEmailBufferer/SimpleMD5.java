@@ -10,7 +10,7 @@ import java.security.NoSuchAlgorithmException;
  * </p>
  * <p>
  * Ennek a segítségével döntöm el, hogy egy e-mail fájl már be lett-e szúrva a bufferbe, vagy sem.<br />
- * Forras lopva: http://www.anyexample.com/programming/java/java_simple_class_to_compute_md5_hash.xml
+ * Forrás: http://www.anyexample.com/programming/java/java_simple_class_to_compute_md5_hash.xml
  * </p>
  * @author makos
  */

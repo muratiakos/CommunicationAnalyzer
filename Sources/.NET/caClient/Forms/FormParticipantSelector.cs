@@ -7,10 +7,13 @@ using caClient.caServiceReference;
 
 namespace caClient.Forms
 {
+	//Résztvevők kiválasztását segítő párbeszédablak, ami a meghívó objektummak visszaadja a kiválasztott résztvevők istáját
 	public partial class FormParticipantSelector : Form
 	{
+		//Szülő objektum listája
 		private object parentList;
 
+		//Konstruktor és résztvevők lekérdezése
 		public FormParticipantSelector()
 		{
 			InitializeComponent();
@@ -21,6 +24,7 @@ namespace caClient.Forms
 			participantList.ParticipantList = new caParticipantObjectList(results);
 		}
 
+		//Meghívás és szülő objektumok betöltése a listába
 		public void OpenForAdd(object _parentList, String label)
 		{
 			lvSelected.Clear();
@@ -38,6 +42,7 @@ namespace caClient.Forms
 			this.Show();
 		}
 
+		//Dupla klikkel a választott résztvevők hozzáadása a listához
 		private void participantList_RowDoubleClick(object sender, EventArgs e)
 		{
 			foreach (caParticipantObject po in participantList.Selection)
@@ -49,6 +54,7 @@ namespace caClient.Forms
 
 		}
 
+		//Ok kattintás - hatására a választott objektumokat visszaadja a hívó listának
 		private void btOk_Click(object sender, EventArgs e)
 		{
 			((ListView)parentList).Clear();
@@ -59,14 +65,16 @@ namespace caClient.Forms
 			this.Dispose();
 		}
 
+		//Mégse katt - bezárás
 		private void btCancel_Click(object sender, EventArgs e)
 		{
 			this.Dispose();
 		}
 
+		//Gombnyomások kezelése
 		private void lvSelected_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyValue == 46) //delete gomb
+			if (e.KeyValue == 46) //delete gomb  törlés
 			{
 				if (lvSelected.SelectedItems.Count > 0) lvSelected.Items.Remove(lvSelected.SelectedItems[0]);
 			}

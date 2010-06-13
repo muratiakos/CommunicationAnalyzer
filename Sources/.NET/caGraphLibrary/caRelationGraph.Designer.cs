@@ -53,7 +53,6 @@
 			this.gViewer.ZoomF = 1;
 			this.gViewer.ZoomFraction = 0.5;
 			this.gViewer.ZoomWindowThreshold = 0.05;
-			this.gViewer.Load += new System.EventHandler(this.gViewer_Load);
 			// 
 			// mutat
 			// 
@@ -73,7 +72,6 @@
 			this.Controls.Add(this.gViewer);
 			this.Name = "caRelationGraph";
 			this.Size = new System.Drawing.Size(594, 359);
-			this.Load += new System.EventHandler(this.emaRelationGraph_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

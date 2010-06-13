@@ -11,12 +11,14 @@ using caCoreLibrary;
 
 namespace caClient.Forms
 {
+	//Csatlakozás kezelő ablak
 	public partial class FormConnect : Form
 	{
-		FormMain p;
-		bool success = false;
-		ServiceClient conn = null;
+		FormMain p; //Szülő ablak
+		bool success = false; //Sikeresség indikátora
+		ServiceClient conn = null; //Kliens-Szerver kapcsolat objektuma
 
+		//Kapcsolatablak incializálása		
 		public FormConnect(FormMain _p, ServiceClient _conn)
 		{
 			InitializeComponent();
@@ -25,18 +27,22 @@ namespace caClient.Forms
 			OnlineControl();
 		}
 
+		//Kapcsolódás gomb megnyomása
 		private void btConnect_Click(object sender, EventArgs e)
 		{
+			//Animációs csík és aszinkron kapcsolat indítás
 			progressBar.MarqueeAnimationSpeed = 200;
 			btConnect.Enabled = false;
 			backgroundConnect.RunWorkerAsync();
 		}
 
+		//Aszinkron kapcsolatfelépítés a háttérben
 		private void backgroundConnect_DoWork(object sender, DoWorkEventArgs e)
 		{
 			try
 			{
-				conn = new ServiceClient(); //csalás itt még - nincs más url cbServerUrl.Text);
+				//Kapcsolat megnyitás, üzenetek lekérdezése és sikeresség indikátor beállítása
+				conn = new ServiceClient(); //iit még van csalás - csak a beégetett url-re cbServerUrl.Text);
 				conn.Open();
 				caMessageService.Add(conn.Connect());
 				success = true;
@@ -46,12 +52,14 @@ namespace caClient.Forms
 				caMessageService.Add(new caMessage() { text = ex.Message, type = caMessageType.Error });
 			}
 		}
-
+		//Ha befejeződött a csatlakozás
 		private void backgroundConnect_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
+			//Animáció leállítása
 			progressBar.MarqueeAnimationSpeed = 0;
 			progressBar.Value = 0;
 
+			//Főablaknak a kapcsolat átadása
 			if (success)
 			{
 				p.OnlineControl(conn);
@@ -60,6 +68,7 @@ namespace caClient.Forms
 			}
 			else
 			{
+				//Hiba esetén hibaüzenet, ha nincs nyitva
 				if (!(conn.State == System.ServiceModel.CommunicationState.Opened))
 				{
 					caMessageService.Add(new caMessage() { text = "Connection failed" });
@@ -69,6 +78,7 @@ namespace caClient.Forms
 			OnlineControl();
 		}
 
+		//Felület beállítása az objektumok állapota alapján
 		private void OnlineControl()
 		{
 			bool online = (conn.State == System.ServiceModel.CommunicationState.Opened);
@@ -77,6 +87,7 @@ namespace caClient.Forms
 
 		}
 
+		//Kapcsolat bontása kattintásra
 		private void btDisconnect_Click(object sender, EventArgs e)
 		{
 			try

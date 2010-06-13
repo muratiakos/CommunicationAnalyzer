@@ -12,12 +12,10 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.util.*;
 
 /**
- * <p>A javax.mail szolgáltatásai fölé épített egyszerűsített Mail osztály</p>
- * @author makos
+ * <p>A javax.mail szolgáltatásai fölé épített egyszerűsített E-mail osztály</p>
+ * @author Muráti Ákos
  */
 public class SimpleMail {
-    //Statikus metódusok
-
     //Változók
     public String m_bufferId;   //buffer ID
     public String m_commId; //messageId
@@ -31,7 +29,7 @@ public class SimpleMail {
     }
 
     /**
-     * String-ből példányosítandó levél konstruktora, ami végül a bytetömbként dolgozik tovább
+     * String-ből példányosítandó levél konstruktora, ami végül a bytetömbként hív tovább
      * @param _bufferId
      * @param strSource
      */
@@ -40,7 +38,7 @@ public class SimpleMail {
     }
 
     /**
-     * Bytetömbből példányosítandó levél konstruktora
+     * Bytetömbből példányosítandó e-mail konstruktora
      *
      * @param _bufferId
      * @param rawDataBytes
@@ -67,7 +65,7 @@ public class SimpleMail {
 
     /**
      * Annak meghatározására szolgál, hogy Content-Type mező tartalmazza-e a megadott Type stringet.
-     * SZintén csak egyszerűsítés miatt :)
+     *( SZintén csak egyszerűsítés miatt, dekóderekhez.)
      * @param strCT
      * @param Type
      * @return
@@ -81,7 +79,7 @@ public class SimpleMail {
     }
 
     /**
-     * <p>Egy levél komplett tartalmát visszaadó függvény, beleértve a levél címét, tartalmát és szöveges csatolmányait is
+     * <p>Egy levél teljes szöveges tartalmát visszaadó függvény, beleértve a levél címét, tartalmát és szöveges csatolmányait is
      * konkatenálva. A levél tartalmának feltérképezését a BodyContent rekurzív függvénnyel járja be.</p>
      */
     public String getAllContent() {
@@ -99,7 +97,7 @@ public class SimpleMail {
      * konkatenálva.</p>
      *
      * <p>
-     * A levélen javax.mail MIMEMessage Content szolgáltatásai fölé írt eljárás, ami bejárja a Content fát, és annak
+     * A levélen javax.mail MIMEMessage Content szolgáltatásai fölé írt eljárás, ami rekurzívan bejárja a Content fát, és annak
      * objektumainak szöveges részeit becsatolja a tartalomba.
      * <br />
      * Ezt a függvényt kell bővíteni, ha más content-eket is szeretnénk tudni értelmezni, például pdf vagy doc szövegeinek, vagy mondjuk
@@ -168,7 +166,7 @@ public class SimpleMail {
     }
 
     /**
-     * Összes szereplő e-mailjének betöltése a SimpleMail címzett tömjébe
+     * Összes szereplő (TO, CC, BCC) e-mailjének betöltése a SimpleMail címzett tömjébe
      */
     public void LoadAddresses() {
         InternetAddress a = null;
@@ -208,7 +206,7 @@ public class SimpleMail {
             } catch (Exception ex) {
             }
 
-
+           //Listák összefűzése egy tömbbe
             m_recipients = new SimpleAddress[al_to_c + al_cc_c + al_bcc_c];
             int db = 0;
 
@@ -237,7 +235,7 @@ public class SimpleMail {
     }
 
     /**
-     * A szalban levo elozo üzenet (amire válasz vagy továbbított) messageID-ját visszadó függvény
+     * A szalban az aktuális üzenet megelőző e-mail (amire válasz vagy továbbított) messageID-ját visszadó függvény
      * @return előző üzenet m_commId-ja
      */
     public String getPreviousMessageId() {

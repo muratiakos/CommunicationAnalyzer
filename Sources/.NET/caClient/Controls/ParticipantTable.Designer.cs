@@ -159,7 +159,6 @@
 			this.Controls.Add(this.dgParticipant);
 			this.Name = "ParticipantTable";
 			this.Size = new System.Drawing.Size(518, 397);
-			this.Load += new System.EventHandler(this.ParticipantTable_Load);
 			((System.ComponentModel.ISupportInitialize)(this.dgParticipant)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();

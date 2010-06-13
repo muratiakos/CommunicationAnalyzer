@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 
 namespace caCoreLibrary
 {
+	//Objektum állapotok enumerációi
 	public enum caObjectState
 	{
 		Unknown,
@@ -10,6 +11,7 @@ namespace caCoreLibrary
 		Syncronized
 	}
 
+	//Rekord státuszok enumerációi
 	public enum caRecordStatus
 	{
 		Unknown = -1,
@@ -19,6 +21,8 @@ namespace caCoreLibrary
 		Deleted = 3
 	}
 
+
+	//Címkézési szabály leíró osztálya
 	[DataContract]
 	public class caTaggingRule
 	{

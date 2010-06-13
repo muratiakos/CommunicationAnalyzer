@@ -7,10 +7,17 @@ using caClient.Forms;
 
 namespace caClient
 {
-	class caClientService
+/// <summary>
+/// Kliens és szerver közötti eljárások, valamint az általános kliens funkciókat
+/// megvalósító osztály
+/// </summary>
+	
+class caClientService
 	{
+		//Globális címkelista
 		public static caGlobalList glTag = new caGlobalList();
 
+		//Címkéket letöltő eljárás
 		public static caGlobalList LoadTagList(ServiceClient conn)
 		{
 			caGlobalList gl = new caGlobalList();
@@ -28,12 +35,15 @@ namespace caClient
 			return gl;
 		}
 
+		//Résztvevőket betöltő eljárás - Cache-ből vagy szerverről
 		public static caParticipantObject UseOrLoadParticipant(ServiceClient conn, caParticipantObjectList pol, string _pId)
 		{
+			//Beállítás megkísérlése a gyorsítótárból
 			caParticipantObject rP = pol.IsIn(_pId);
-			if (rP == null)
+
+			if (rP == null) //Amennyiben a résztvevő még nincs a cache-ben
 			{
-				//betöltés
+				//Letöltés a szerverről
 				rP = caClientService.LoadParticipantObject(conn, new caParticipantObject(_pId, _pId));
 				if (String.IsNullOrEmpty(rP.m_name)) rP = caClientService.LoadParticipantObject(conn, new caParticipantObject(_pId, _pId)); ;
 				pol.AddIdentical(rP);
@@ -43,10 +53,14 @@ namespace caClient
 			return rP;
 		}
 
+		//Csoport tagjait kifejtő eljárás
 		public static caParticipantObjectList ExpandParticipantGroup(ServiceClient conn, caParticipantObjectList pol)
 		{
+			//KIválasztott résztvevők közül csoportok lekérése LINQ-val
 			caParticipantObjectList expL = pol;
 			List<caParticipantObject> expP = expL.FindAll(delegate(caParticipantObject po) { return po.m_type == caParticipantType.Group; });
+
+			//MInden csoporttagság letöltése egyenként
 			foreach (caParticipantObject po in expP)
 			{
 				caParticipantObject pg = caClientService.LoadParticipantObject(conn, po);
@@ -56,7 +70,7 @@ namespace caClient
 			return expL;
 		}
 
-
+		//Teljes résztvevő obejtum letöltése szereverről
 		public static caParticipantObject LoadParticipantObject(ServiceClient conn, caParticipantObject po)
 		{
 			try
@@ -65,6 +79,7 @@ namespace caClient
 				caParticipantObject _po = new caParticipantObject(p);
 				po.Copy(_po);
 
+				//Tagságok, tagok és elérhetőségek letöltése
 				po.m_memberList = new caParticipantObjectList(conn.LoadParticipantMembers(po.m_participantId));
 				po.m_groupList = new caParticipantObjectList(conn.LoadParticipantGroups(po.m_participantId));
 				po.m_addressList = conn.LoadParticipantAddress(po.m_participantId);
@@ -75,10 +90,12 @@ namespace caClient
 			return po;
 		}
 
+		//Teljes résztvevő objektum mentése
 		public static caParticipantObject SaveParticipantObject(ServiceClient conn, caParticipantObject actualPo)
 		{
 			//SendTimeOut error lehet...
 			caParticipant newP = conn.SaveParticipant(actualPo.GetParticipant());
+			//Tagságok, tagok és elérhetőségek mentése
 			newP.m_groupList = conn.SaveParticipantGroups(actualPo.m_participantId, actualPo.m_groupList.GetParticipantStringList());
 			newP.m_memberList = conn.SaveParticipantMembers(actualPo.m_participantId, actualPo.m_memberList.GetParticipantStringList());
 			newP.m_addressList = conn.SaveParticipantAddress(actualPo.m_participantId, actualPo.m_addressList);
@@ -89,6 +106,7 @@ namespace caClient
 			return newPo;
 		}
 
+		//Címkézési szabály letöltése a szerverről
 		public static caTaggingRule LoadTaggingRule(ServiceClient conn, caTaggingRule actualTr)
 		{
 			caTaggingRule newTr = null;
@@ -101,6 +119,7 @@ namespace caClient
 			return newTr;
 		}
 
+		//Cjmkézési szabály mentése a szerverre
 		public static caTaggingRule SaveTaggingRule(ServiceClient conn, caTaggingRule actualTr)
 		{
 			caTaggingRule newTr = null;
@@ -112,6 +131,9 @@ namespace caClient
 
 			return newTr;
 		}
+
+
+		//Címkézési szabály futtatása és kommunikáció címkézése
 		public static bool RunTaggingRule(ServiceClient conn, string _ruleId)
 		{
 			bool retVal = false; // newTr = null;
@@ -125,6 +147,7 @@ namespace caClient
 			return retVal;
 		}
 
+		//Adott címke eltávolítása a rendszerből
 		public static bool DeleteTag(ServiceClient conn, string _tag)
 		{
 			bool retVal = false; // newTr = null;
@@ -138,6 +161,7 @@ namespace caClient
 			return retVal;
 		}
 
+		//Kapcsolati háló elemzés futtatása és eredmények lekérése a szerverről
 		public static List<caRelationAnalysisResult> GetParticipantRelationAnalysisResultList(ServiceClient conn, string query)
 		{
 			List<caRelationAnalysisResult> results = new List<caRelationAnalysisResult>();
@@ -151,6 +175,7 @@ namespace caClient
 			return results;
 		}
 
+		//Ügymenet elemzés futtatása és eredmények lekérése a szerverről
 		public static List<caFlowAnalysisResult> GetFlowAnalysisResultList(ServiceClient conn, string query)
 		{
 			List<caFlowAnalysisResult> results = new List<caFlowAnalysisResult>();
@@ -164,6 +189,7 @@ namespace caClient
 			return results;
 		}
 
+		//Résztvevő-téma elemzés futtatása és eredmények lekérdezése a szerverről
 		public static List<caTagParticipantAnalysisResult> GetTagParticipantAnalysisResultList(ServiceClient conn, string query)
 		{
 			List<caTagParticipantAnalysisResult> results = new List<caTagParticipantAnalysisResult>();

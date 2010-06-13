@@ -9,14 +9,20 @@ using System.Threading;
 
 namespace caServiceLibrary
 {
+	/// <summary>
+	/// IService Interface-t megvalósító osztály
+	/// A kiszolgáló WebService hívásainak eljárásait és függvényeit foglalja magába
+	/// </summary>
 	public class Service : IService
 	{
 		#region IService Members
 
+		//Klienstől érkező kapcsolatkezdeményezés eljárása
 		public caMessage Connect()
 		{
 			try
 			{
+				//Csatlakozás megkísérlése és a kliensnek dediákált adatbázis kapcsolat felépítés
 				caDatabaseService ds = new caDatabaseService();
 				Thread.Sleep(2000);
 			}
@@ -29,6 +35,7 @@ namespace caServiceLibrary
 			return new caMessage() { text = "Successfully connected" };
 		}
 
+		//Résztvevők listájának lekérdezése
 		public List<caParticipant> LoadParticipantList()
 		{
 			caDatabaseService dm = new caDatabaseService();
@@ -36,6 +43,7 @@ namespace caServiceLibrary
 			return results;
 		}
 
+		//Résztvevők listájának lekérdezése szűrő feltételekkel
 		public caParticipant LoadParticipant(string _participantId)
 		{
 			caDatabaseService dm = new caDatabaseService();
@@ -43,6 +51,7 @@ namespace caServiceLibrary
 			return p;
 		}
 
+		//Résztvevő csoportjainak betöltése azonosító alapján
 		public List<caParticipant> LoadParticipantGroups(string _participantId)
 		{
 			caDatabaseService dm = new caDatabaseService();
@@ -50,6 +59,7 @@ namespace caServiceLibrary
 			return results;
 		}
 
+		//Résztvevő tagjainak letöltése azonosító alapján
 		public List<caParticipant> LoadParticipantMembers(string _participantId)
 		{
 			caDatabaseService dm = new caDatabaseService();
@@ -57,6 +67,7 @@ namespace caServiceLibrary
 			return results;
 		}
 
+		//Résztvevő mentése (csoport és tagsági adatok nélkül)
 		public caParticipant SaveParticipant(caParticipant actualP)
 		{
 			caDatabaseService dm = new caDatabaseService();
@@ -64,6 +75,7 @@ namespace caServiceLibrary
 			return results;
 		}
 
+		//Résztvevő csoportadatok mentése
 		public List<caParticipant> SaveParticipantGroups(string _participantId, List<string> groups)
 		{
 			caDatabaseService dm = new caDatabaseService();
@@ -72,6 +84,7 @@ namespace caServiceLibrary
 			return null;
 		}
 
+		//Résztvevevő tagjainak mentése
 		public List<caParticipant> SaveParticipantMembers(string _participantId, List<string> members)
 		{
 			caDatabaseService dm = new caDatabaseService();
@@ -80,12 +93,14 @@ namespace caServiceLibrary
 			return null;
 		}
 
+		//Résztvevő eléréseinek betöltése
 		public List<caParticipantAddress> LoadParticipantAddress(string _participantId)
 		{
 			caDatabaseService dm = new caDatabaseService();
 			return dm.LoadParticipantAddressRecordList(_participantId);
 		}
 
+		//Résztvevő eléréseinek mentése
 		public List<caParticipantAddress> SaveParticipantAddress(string _participantId, List<caParticipantAddress> address)
 		{
 			caDatabaseService dm = new caDatabaseService();
@@ -94,13 +109,14 @@ namespace caServiceLibrary
 			return null;
 		}
 
-
+		//Címkézési szabályok listájának letöltése
 		public List<caTaggingRule> LoadTaggingRuleList()
 		{
 			caDatabaseService dm = new caDatabaseService();
 			return dm.LoadTaggingRuleRecordList("");
 		}
 
+		//Címkézési szabály betöltése
 		public caTaggingRule LoadTaggingRule(string _ruleId)
 		{
 			caDatabaseService dm = new caDatabaseService();
@@ -116,6 +132,7 @@ namespace caServiceLibrary
 
 		}
 
+		//Címkézési szabáy mentése
 		public caTaggingRule SaveTaggingRule(caTaggingRule tr)
 		{
 			caDatabaseService dm = new caDatabaseService();
@@ -123,6 +140,7 @@ namespace caServiceLibrary
 			else return null;
 		}
 
+		//Címkézési szabály futtatása
 		public caMessage RunTaggingRule(string _ruleId)
 		{
 			caMessage feedback = new caMessage();
@@ -131,6 +149,7 @@ namespace caServiceLibrary
 			{
 				String innerSql = "";
 				if (tr.Custom_Query) innerSql = String.Format(tr.Query, tr.Tag);
+				//Selectből -> Insert utasítás
 				else innerSql = String.Format("SELECT DISTINCT C.COMM_ID, '{0}' as tag FROM CAD_COMM C WHERE {1}", tr.Tag, tr.Query);
 
 				String sql = String.Format("INSERT INTO CAD_TAG (COMM_ID, TAG_ID) ( {0} )", innerSql);
@@ -145,6 +164,7 @@ namespace caServiceLibrary
 		}
 
 
+		//Címke törlése kommunikációs elemekről
 		public caMessage DeleteTag(string _tag)
 		{
 			caMessage feedback = new caMessage();
@@ -156,7 +176,7 @@ namespace caServiceLibrary
 			return feedback;
 		}
 
-
+		//Résztvevő cseréje egy másik résztvevőre
 		public caMessage ReplaceParticipant(string _fromPID, string _toPID)
 		{
 			caMessage feedback = new caMessage();
@@ -192,13 +212,14 @@ namespace caServiceLibrary
 			return feedback;
 		}
 
+		//Címkék lisájának letöltése
 		public List<string> LoadTagList()
 		{
 			caDatabaseService ds = new caDatabaseService();
 			return ds.LoadTagList();
 		}
 
-
+		//Üzenetek lekérdezése a szerverről
 		public List<caMessage> GetMessages()
 		{
 
@@ -207,6 +228,7 @@ namespace caServiceLibrary
 			return ml;
 		}
 
+		//Kapcsolati háló elemzés futtatása és eredmények visszaadása
 		public List<caRelationAnalysisResult> GetParticipantRelationAnalysisResultList(string query)
 		{
 			List<caRelationAnalysisResult> results = new List<caRelationAnalysisResult>();
@@ -221,6 +243,7 @@ namespace caServiceLibrary
 			return results;
 		}
 
+		//Ügymenet elemzés lekérdezése és eredmények visszaadása
 		public List<caFlowAnalysisResult> GetFlowAnalysisResultList(string query)
 		{
 			List<caFlowAnalysisResult> results = new List<caFlowAnalysisResult>();
@@ -235,6 +258,7 @@ namespace caServiceLibrary
 			return results;
 		}
 
+		//Résztvevő-téma elemzés futtatása és eredmények visszaadása
 		public List<caTagParticipantAnalysisResult> GetTagParticipantAnalysisResultList(string query)
 		{
 			List<caTagParticipantAnalysisResult> results = new List<caTagParticipantAnalysisResult>();

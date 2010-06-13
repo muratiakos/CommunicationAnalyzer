@@ -5,6 +5,10 @@ using caCoreLibrary;
 
 namespace caClient.Forms
 {
+	/// <summary>
+	/// Test kliens ablak statikus adatok és objektumok teszteléséhez
+	/// </summary>
+
 	public partial class FormTest : Form
 	{
 		public FormTest()

@@ -9,6 +9,11 @@ using System.Windows.Forms;
 
 namespace caClient.Controls
 {
+	/// <summary>
+	/// Egységes ablakfejlécek vezérlője a BME és TMIT logókkal
+	/// Automatikus méretezéssel
+	/// </summary>
+
 	public partial class HeaderControl : UserControl
 	{
 		public HeaderControl()

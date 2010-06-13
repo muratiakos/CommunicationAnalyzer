@@ -7,36 +7,45 @@ using caCoreLibrary;
 
 namespace caClient.Forms
 {
+	//Ügymenet felderítés kliens osztálya
 	public partial class FormFlowAnalysis : Form
 	{
+		//Kapcsolat objektuma
 		ServiceClient conn = null;
 
+		//Alap-  és szintnként bővülő SQL lekérdezés
 		String queryBase = null;
 		String queryFlow = null;
 
+		//Éppen aktuális folyamszint
 		Int32 flowLevel = 0;
 
+		//Gyorsítótárazott Kommunikációs tények
 		public List<String> cacheCommId = new List<String>();
 		public List<String> cachePreviousCommId = new List<String>();
 
+		//Alap- és szintenként bővített eredménylisták
 		public List<caFlowAnalysisResult> resultsBase = new List<caFlowAnalysisResult>();
 		public List<caFlowAnalysisResult> resultsFlow = new List<caFlowAnalysisResult>();
 
+		//Ábrázolandó kommunikációs modell (kézbesítések tényei)
 		public caSubCommItemObjectList model = new caSubCommItemObjectList();
 
 
+		//Alap SQL lekérdezések stringje
 		String qHeader = "SELECT DISTINCT SC.SUBCOMM_ID, SC.SENT_TIME, SC.RECEIVED_TIME, SC.COMM_ID, SC.PREV_COMM_ID,  PF.PARTICIPANT_ID FROM_ID, PF.name FROM_NAME, PT.PARTICIPANT_ID TO_ID, PT.NAME TO_NAME";
 		String qFrom = "FROM cad_participant PF, cad_participant PT, cad_subcomm SC";
 		String qWhereSys = "WHERE";
 		String qGroupSys = "ORDER BY SC.RECEIVED_TIME";
 
-
+		//Inicializáló konstruktor - kapcsolat átvétele a fő formtól
 		public FormFlowAnalysis(ServiceClient _conn)
 		{
 			InitializeComponent();
 			conn = _conn;
 		}
 
+		//Felület frissítése az objektumok állapota alapján
 		private void RefreshUI()
 		{
 			//Textbox
@@ -60,6 +69,7 @@ namespace caClient.Forms
 			caCommFlow1.DrawGraph();
 		}
 
+		//Alap lekérdezés generálása a keresőfelület alapján
 		public string GenerateBaseQuery()
 		{
 			flowLevel = 0;
@@ -68,7 +78,7 @@ namespace caClient.Forms
 			String qWhereUser = "";
 			String qGroupUser = "";
 
-
+			//Hierarchikus feltétel felépítés
 			caConditionItem c = new caConditionItem("AND", "()");
 			c.First = true;
 			c.SubCondition.Add(new caConditionItem("AND", "(SC.from_participant = PF.participant_id and SC.to_participant = PT.participant_id)"));
@@ -94,7 +104,7 @@ namespace caClient.Forms
 			caConditionItem cPart = new caConditionItem("AND", "()");
 			if (!searchForm.AmongFromTo)
 			{
-				//Közöttük bárhogy OR
+				//Közöttük lévő kapcsolat feltételek - bárhogy OR
 
 				caConditionItem cFrom = new caConditionItem("OR", "()");
 				foreach (caParticipantObject po in expFrom)
@@ -146,10 +156,7 @@ namespace caClient.Forms
 			c.SubCondition.Add(cPart);
 
 
-
-
-
-			//--------------------- Tag feltételek hozzáadása
+			//Tag feltételek hozzáadása
 			if (searchForm.Tags.Count > 0) //Ha van kiválasztva
 			{
 				qFrom += ", CAD_TAG T";
@@ -170,6 +177,7 @@ namespace caClient.Forms
 			return qHeader + " " + qFrom + " " + qWhereSys + " " + qWhereUser + " " + qGroupSys + " " + qGroupUser;
 		}
 
+		//Következő szintű bővítő SQL lekérdezés generálása
 		public string GenerateNextFlowWidenQueryFromCache()
 		{
 			//PF = from, PT = to, SC = subcomm, T = tag
@@ -185,8 +193,9 @@ namespace caClient.Forms
 			c.SubCondition.Add(new caConditionItem("AND", "SC.SENT_TIME>=to_date('" + searchForm.After.ToString("yyyy.MM.dd") + "', 'yyyy.mm.dd')"));
 			c.SubCondition.Add(new caConditionItem("AND", "SC.SENT_TIME<=to_date('" + searchForm.Before.ToString("yyyy.MM.dd") + "', 'yyyy.mm.dd')"));
 
-			//Tágítás
+			//Feltételek Tágítása - további lehetőség felvétele
 			caConditionItem cBasePrePost = new caConditionItem("AND", "()");
+
 			//Előzmények betöltése
 			foreach (String s in cachePreviousCommId)
 			{
@@ -197,7 +206,7 @@ namespace caClient.Forms
 				}
 			}
 
-			//Eddigiek és Követők betöltése
+			//Eddigiek és az azt Követők betöltése
 			foreach (String s in cacheCommId)
 			{
 				if (!String.IsNullOrEmpty(s))
@@ -213,14 +222,17 @@ namespace caClient.Forms
 			c.SubCondition.Add(cBasePrePost);
 			qWhereUser = c.ToString();
 
+			//Összes feltétel összefűzése
 			return qHeader + " " + qFrom + " " + qWhereSys + " " + qWhereUser + " " + qGroupSys + " " + qGroupUser;
 		}
 
+		//Gyorsítótár építése
 		private void BuildCache(List<caFlowAnalysisResult> resultList)
 		{
 			cacheCommId = new List<string>();
 			cachePreviousCommId = new List<string>();
-
+			
+			//Casche bővítése az új tételekkel
 			cacheCommId = resultList.ConvertAll(new Converter<caFlowAnalysisResult, String>(delegate(caFlowAnalysisResult r) { return r.m_commId; }));
 			cachePreviousCommId = resultList.ConvertAll(new Converter<caFlowAnalysisResult, String>(delegate(caFlowAnalysisResult r) { return r.m_previousCommId; }));
 
@@ -228,23 +240,21 @@ namespace caClient.Forms
 			cachePreviousCommId.Remove("");
 		}
 
+		//Lekérdezés futtatása és eredmnyek lekérdezése a szervertől
 		private List<caFlowAnalysisResult> GenerateResultsAndRebuildCache(String query)
 		{
-			//Lekérdezés
-			//caDatabaseService ds = new caDatabaseService();
 			List<caFlowAnalysisResult> rl = new List<caFlowAnalysisResult>();
 			try
 			{
-				//rl = ds.GetFlowAnalysisResultList(query);
 				rl = caClientService.GetFlowAnalysisResultList(conn, query);
 			}
 			catch { }
 
 			BuildCache(rl);
-
 			return rl;
 		}
 
+		//Ábrázolandó kommunikációs kapcsolatok generálása
 		private void GenerateCommModelFromFlowResults(List<caFlowAnalysisResult> ar)
 		{
 			model = new caSubCommItemObjectList();
@@ -279,9 +289,9 @@ namespace caClient.Forms
 			}
 		}
 
+		//Kattintás a keresés gombra
 		private void btSearch_Click(object sender, EventArgs e)
 		{
-
 			//1A lépés első keresés Query generálása
 			queryBase = GenerateBaseQuery();
 			txBaseQuery.Text = queryBase;
@@ -306,7 +316,7 @@ namespace caClient.Forms
 		}
 
 
-
+		//Lekérdezés gomb megnyomása - ha kézzel megadott SQL futtatna
 		private void btQuery_Click(object sender, EventArgs e)
 		{
 			//1A - Saját generálás
@@ -321,6 +331,7 @@ namespace caClient.Forms
 			RefreshUI();
 		}
 
+		//Lekérdezés bővítése egy újabb szinttel
 		private void btWidenFlow_Click(object sender, EventArgs e)
 		{
 			//2B - Manuális bővítés
@@ -333,6 +344,7 @@ namespace caClient.Forms
 			RefreshUI();
 		}
 
+		//Lekérdezés futtatása és felület frissítése
 		private void btExecuteFlowQuery_Click(object sender, EventArgs e)
 		{
 			if (!String.IsNullOrEmpty(queryFlow))
@@ -342,6 +354,7 @@ namespace caClient.Forms
 			RefreshUI();
 		}
 
+		//Felület frissítése gombnyomásra
 		private void btRedraw_Click(object sender, EventArgs e)
 		{
 			RefreshUI();

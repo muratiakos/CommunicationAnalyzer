@@ -9,7 +9,7 @@ import javax.mail.internet.InternetAddress;
 /**
  * A javax.mail library InternetAddress osztályának egyszerűsítése
  *
- * @author makos
+ * @author Muráti Ákos
  */
 public class SimpleAddress {
 
@@ -23,6 +23,11 @@ public class SimpleAddress {
         eRecipientMode = 0;
     }
 
+    /**
+     * Osztály konstruktora, ami egy IntrnetMessage osztály alapján példányosítja önmagát
+     *
+     * @author Muráti Ákos
+     */
     public SimpleAddress(InternetAddress a) {
         eAddress = a.getAddress();
         eName = a.getPersonal();

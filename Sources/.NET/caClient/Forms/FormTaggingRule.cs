@@ -11,16 +11,20 @@ using caClient.caServiceReference;
 
 namespace caClient.Forms
 {
+	//Címkézési szabály kliens ablaka
 	public partial class FormTaggingRule : Form
 	{
-		//Eseménykezelők
+		//Változás s Eseménykezelés
 		public event EventHandler ObjectChanged;
 		private bool changed = false;
 
+		//Kapcsolat obj.
 		internal ServiceClient conn = null;
 
+		//Címkézési szabály
 		caTaggingRule m_tr = new caTaggingRule();
 
+		//Konstruktor
 		public FormTaggingRule()
 		{
 			InitializeComponent();
@@ -32,12 +36,15 @@ namespace caClient.Forms
 			RefreshUI();
 		}
 
+		//KOmplett címkézési szabályt átvevő konstruktor		
 		public FormTaggingRule(caTaggingRule tr)
 			: this()
 		{
 			m_tr = tr;
 			RefreshUI();
 		}
+
+		//Felület frissítése
 		public void RefreshUI() { RefreshUI(m_tr); }
 		public void RefreshUI(caTaggingRule tr)
 		{
@@ -58,6 +65,7 @@ namespace caClient.Forms
 
 		}
 
+		//Címkézési szabály osztály visszaadása a beállított értékek alapján
 		private caTaggingRule GetTaggingRule()
 		{
 			caTaggingRule tr = new caTaggingRule();
@@ -81,17 +89,20 @@ namespace caClient.Forms
 			return tr;
 		}
 
+		//Bezárás
 		private void btClose_Click(object sender, EventArgs e)
 		{
 			this.Close();
 		}
 
+		//Újratöltés és frissítés
 		private void btReload_Click(object sender, EventArgs e)
 		{
 			caClientService.LoadTaggingRule(conn, m_tr);
 			RefreshUI();
 		}
 
+		//Címkézési szabály mentése a szerverre
 		private void btSave_Click(object sender, EventArgs e)
 		{
 			caTaggingRule tr = GetTaggingRule();
@@ -100,21 +111,25 @@ namespace caClient.Forms
 			this.Close();
 		}
 
+		//Bezáráskor, a volt változás, akkor visszaküldjük a hívó osztálynak
 		private void FormTaggingRule_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			if (changed) ObjectChanged.Invoke(sender, new EventArgs());
 		}
 
+		//Egyedi lekérdezés ki-bekapcsolása
 		private void chkCustomQuery_CheckedChanged(object sender, EventArgs e)
 		{
 			txQuery.Enabled = chkCustomQuery.Checked;
 		}
 
+		//Címkézési szably futtatása
 		private void btRun_Click(object sender, EventArgs e)
 		{
 			caClientService.RunTaggingRule(conn, m_tr.RuleId);
 		}
 
+		//Eddig kiosztott címkék törlése
 		private void button1_Click(object sender, EventArgs e)
 		{
 			caClientService.DeleteTag(conn, m_tr.Tag);

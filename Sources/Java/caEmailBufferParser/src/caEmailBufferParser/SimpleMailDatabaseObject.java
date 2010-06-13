@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 
 /**
- * A SimpleMail-t kiterjesztő osztály az adatbázisban tároláshoz és
+ * A SimpleMail-t kiterjesztő osztály az adatbázisban történő tároláshoz és
  * feldolgozáshoz.
  * 
  * @author makos
@@ -42,7 +42,7 @@ public class SimpleMailDatabaseObject extends SimpleMail {
     String m_threadId;          //szál ID
 
     /**
-     * Konstruktor az adatbázis kapcsolat és az SQL utasítások eltárolásához. Később property-síthető.
+     * Az üzenet példányosításakor megadjuk az adatbázis kapcsolat példányát és az üzenet DB azonosítóit is.
      *
      * @param _conn Kapcsolat
      * @param _bufferId
@@ -53,6 +53,7 @@ public class SimpleMailDatabaseObject extends SimpleMail {
         //m_bufferId = _bufferId;
         conn = _conn;
 
+        //Tároláshoz használt tárolt eljárások inicializálása
         try {
             ps_u_RAWDATA = conn.prepareStatement("UPDATE CAD_RAWDATA SET STATUS=1, COMM_ID=? WHERE BUFFER_ID=?");
             ps_i_COMM = conn.prepareStatement("INSERT INTO CAD_COMM (COMM_ID, CONTENT, THREAD_ID) VALUES ( ?, ?, ?)");
@@ -69,13 +70,13 @@ public class SimpleMailDatabaseObject extends SimpleMail {
     }
 
     /**
-     * A levél objektum letárolását végzi az adatbázisban az előfeldolgozást követően
+     * Az e-mail példány adatbázisban tárolását végző eljárás.
      *
      * @return A letárolás sikerességével tér vissza
      */
     public Boolean store() {
-        boolean siker = true;
-        boolean updateMode = false;
+        boolean siker = true; //Optimista beszúrás: addig minden jó, amíg nem tudunk hibáról
+        boolean updateMode = false; //Frissítés vagy beszúrás
 
         //########## Megvizsgálni van-e már ez a levél az adatbázisban messageID alapján
         try {
@@ -89,7 +90,7 @@ public class SimpleMailDatabaseObject extends SimpleMail {
             D(" ~ERROR: " + e.toString());
         }
 
-        //Ha van, akkor mit tegyünk?
+        //Ha van, akkor frissíteni kell, nem pedig beszúrni újként
         if (updateMode) {
             //Egyelőre csak kilépünk, de ide lehet írni a frissítő rutin elágazását
             CloseStatements();
@@ -185,11 +186,12 @@ public class SimpleMailDatabaseObject extends SimpleMail {
             m_toString = "";
             m_toParticipantString = "";
             int subcommCount = 0;
+            //MInden egyes küldő-fogadó félre párt képezni és eltárolni a kzbesítések közé
             for (int i = 0; i < m_recipients.length; i++) {
                 subcommCount++;
                 String _toParticipant = InsertParticipantAddress(m_recipients[i].eAddress, m_recipients[i].eName);
 
-                //ÖSSZEFŰZÉS
+                //Résztvevő összefűzése
                 if (m_toParticipantString.indexOf(_toParticipant) == -1) {
                     if (m_toParticipantString.length() > 1) {
                         m_toParticipantString = m_toParticipantString + ", ";
@@ -198,7 +200,7 @@ public class SimpleMailDatabaseObject extends SimpleMail {
                 }
                 m_toString = m_toParticipantString;
 
-                //SUBCOMM tényadatok mentése
+                //SUBCOMM tényadatok mentése - kézbesítés
                 try {
                     // CAD_SUBCOMM (SUBCOMM_ID, SUBCATEGORY, FROM_PARTICIPANT, TO_PARTICIPANT, SENT_TIME, RECEIVED_TIME, COMM_ID, PREV_COMM_ID, PREV_DELAY_SEC, PREV_LINKMODE)
                     ps_i_SUBCOMM.clearParameters();
@@ -244,7 +246,7 @@ public class SimpleMailDatabaseObject extends SimpleMail {
             D(" ~ERROR: " + e.toString());
         }
 
-        try { //RAWDATA beállítása
+        try { //RAWDATA beállítása -> siker esetén feldolgozva státusz
             conn.setAutoCommit(false);
 
             //("UPDATE CAD_RAWDATA SET STATUS=1, COMM_ID=? WHERE BUFFER_ID=?");
@@ -268,6 +270,10 @@ public class SimpleMailDatabaseObject extends SimpleMail {
         return siker;
     }
 
+    /**
+     * Feltételes kiíratás, ha hibakeresési módban vagyunk
+     * @param _out Kiírandó szöveg
+     */
     private void D(String _out) {
         if (debugMode) {
             System.out.println(_out);
@@ -275,9 +281,9 @@ public class SimpleMailDatabaseObject extends SimpleMail {
     }
 
     /**
-     * <p>Emailcímhez Usereket rendelő függvény</p>
+     * <p>Email címhez résztvevőket rendelő függvény</p>
      * <p>Amennyiben az e-mail már tárolva van, úgy visszaadja annak a usernek a DB ID-ját,
-     * ha pedig még nincs, beszúrja azt a címet ismeretlen userként és annak az ID-ját adja
+     * ha pedig még nincs, beszúrja azt a címet ismeretlen userként és annak az új ID-ját adja
      * vissza, ami az U0 .</p>
      *
      * @param _address E-mail cím
@@ -291,7 +297,7 @@ public class SimpleMailDatabaseObject extends SimpleMail {
             ps.setString(1, _address);
 
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) { //van találat
+            if (rs.next()) { //lekérdezni, hogy van-e találat
                 retVal = rs.getString(1);
                 try {
                     rs.close();
@@ -325,14 +331,12 @@ public class SimpleMailDatabaseObject extends SimpleMail {
     }
 
     /**
-     * <p>Emailcímhez Usereket rendelő függvény</p>
-     * <p>Amennyiben az e-mail már tárolva van, úgy visszaadja annak a usernek a DB ID-ját,
-     * ha pedig még nincs, beszúrja azt a címet ismeretlen userként és annak az ID-ját adja
-     * vissza, ami az U0 .</p>
+     * <p>Szál felépítését végző eljárás</p>
+     * <p>Ha a paraméterként átadott szál még nem létezik, akkor beszúrjuk, különben pedig a létező szál zonosítójával térünk vissza.
+     * Ez az eljárás felel a levelek helyes szálba fűzéséért.</p>
      *
-     * @param _address E-mail cím
-     * @param _name Név
-     * @return visszatér az e-mailhez tartozó user ID-val
+     * @param _threadId menteni kívánt szál
+     * @return tárolt szál DB azonosítója
      */
     private String InsertThread(String _threadId) {
         String retVal = _threadId; //amit kapunk
@@ -354,7 +358,7 @@ public class SimpleMailDatabaseObject extends SimpleMail {
                 } catch (Exception e) {
                 }
                 return retVal;
-            } else { //ha nincs, beszúrandó
+            } else { //ha nincs, akkor beszúrandó
                 ps_i_THREAD.setString(1, retVal);
                 ps_i_THREAD.setString(2, "Auto generated by " + retVal);
                 ps_i_THREAD.execute();
@@ -381,6 +385,7 @@ public class SimpleMailDatabaseObject extends SimpleMail {
     private boolean InsertDateTimeRecord(Date dt) {
         boolean retVal = true;
 
+        //Dátum és időkulcs generálása
         String dkey = getFormatedDateTime(dt, "yyyyMMdd");
         String tkey = getFormatedDateTime(dt, "HHmmss");
 
@@ -424,7 +429,7 @@ public class SimpleMailDatabaseObject extends SimpleMail {
     }
 
     /**
-     * Counter Selectek darabszámát adja vissza, feltéve, ha az első paraméter tartalmazza a
+     * Számláló eljrás - A select eredményeinek darabszámát adja vissza, feltéve, ha az első paraméter tartalmazza a
      * darabszámot. Csak egyszerűsítéshez.
      *
      * @param _select Előkészített SQL SELECT COUNT()
@@ -450,7 +455,7 @@ public class SimpleMailDatabaseObject extends SimpleMail {
     }
 
     /**
-     * Beszúrást vagy updatet végző függvény
+     * E-mail beszúrását vagy frissítését végző függvény
      *
      * @param _select
      * @param _insert
@@ -474,7 +479,7 @@ public class SimpleMailDatabaseObject extends SimpleMail {
     }
 
     /**
-     * Java Date értéket konvertál SQL date-re. csak egyszerűsítésre
+     * Java Date értéket konvertál SQL date-re. (csak egyszerűsítésre)
      * @param _d Dátum
      * @return SQL Date dátum
      */
@@ -505,7 +510,7 @@ public class SimpleMailDatabaseObject extends SimpleMail {
     }
 
     /**
-     * String-ből CLOB-ba konvertál
+     * String-ből CLOB-ba konvertáló függvény
      *
      * @param _s Bemeneti szöveg
      * @return Kimeneti CLOB
@@ -515,7 +520,7 @@ public class SimpleMailDatabaseObject extends SimpleMail {
     }
 
     /**
-     * Ez a függvény állítja a bufferbeli RAW példányt feldolgozott állapotúra
+     * Ez a függvény zárja le az osztályhoz tartozó összes tárolt eljárst.
      */
     public void CloseStatements() {
         try {

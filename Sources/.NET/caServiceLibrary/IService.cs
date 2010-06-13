@@ -8,6 +8,10 @@ using caCoreLibrary;
 
 namespace caServiceLibrary
 {
+	/// <summary>
+	/// WebService hívások eljárásait és függvényeit leíró interface 
+	///	Az egyes OP-ok magyarázatai az implementált osztályban - Service.cs
+	/// </summary>
 	[ServiceContract]
 	public interface IService
 	{

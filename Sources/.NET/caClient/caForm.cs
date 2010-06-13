@@ -6,8 +6,13 @@ using caCoreLibrary;
 
 namespace caClient
 {
+	/// <summary>
+	/// ÁLtalános kliens oldali közös ablakkezelési eljárások
+	/// </summary>
+
 	class caForm
 	{
+		//Adott ablak beállítása a főablak MDI gyermekének
 		public static Form MakeMDIChild(Form parent, Form f)
 		{
 			f.MdiParent = parent;
@@ -16,6 +21,7 @@ namespace caClient
 			return f;
 		}
 
+		//Résztvevő tulajdonságainak megnyitása	
 		public static FormParticipant OpenParticipantForm(ServiceClient conn, caParticipantObject po)
 		{
 			FormParticipant fp;
@@ -28,6 +34,7 @@ namespace caClient
 			return fp;
 		}
 
+		//Résztvevő cserélő eszköz megnyitása
 		public static FormParticipantRelpaceTool OpenParticipantReplaceTool(ServiceClient conn, caParticipantObject po)
 		{
 			if (po != null)

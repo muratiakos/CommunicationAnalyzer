@@ -209,7 +209,6 @@
 			this.Controls.Add(this.dtpAfter);
 			this.Name = "SearchBasicForm";
 			this.Size = new System.Drawing.Size(409, 349);
-			this.Load += new System.EventHandler(this.SearchBasicForm_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

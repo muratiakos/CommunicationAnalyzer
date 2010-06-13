@@ -10,18 +10,26 @@ using caCoreLibrary;
 
 namespace caClient.Controls
 {
+	/// <summary>
+	/// Résztvevők listáját táblázatosan megjelenítő vezérlő
+	/// Kattintás és egyéb eseméynkezelőkkel
+	/// </summary>
+
 	public partial class ParticipantTable : UserControl
 	{
-		//Változók
+		//Események
 		public event EventHandler RowDoubleClick;
 		public event EventHandler SelectionChanged;
 		public event MouseEventHandler RowRightClick;
 
+		//Változók
+		//Résztvevők listája
 		private caParticipantObjectList m_participantList = new caParticipantObjectList();
 		private List<caParticipantObject> m_participantListFilter = new List<caParticipantObject>();
 
 
 		//Propertyk
+		//Megjelnítési mód property
 		public caParticipantType ParticipantDisplayMode
 		{
 			get
@@ -55,9 +63,9 @@ namespace caClient.Controls
 		}
 
 
+		//Réstvevők listája
 		public caParticipantObjectList ParticipantList
 		{
-
 			get
 			{
 				return m_participantList;
@@ -77,6 +85,8 @@ namespace caClient.Controls
 				FilterResults();
 			}
 		}
+
+		//Választott érsztvevők property
 		public caParticipantObjectList Selection
 		{
 			get
@@ -113,24 +123,22 @@ namespace caClient.Controls
 		}
 
 		//Események
+		//Beírásra azonnali szűrés
 		private void tx_search_TextChanged(object sender, EventArgs e)
 		{
 			FilterResults();
 		}
 
-		private void ParticipantTable_Load(object sender, EventArgs e)
-		{
-
-		}
-
+		//Típus választsra szűrés
 		private void cb_type_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			FilterResults();
 		}
 
-		//Metódusok
+		//Szűrést végrehajtó LINQ eljárás
 		public void FilterResults()
 		{
+			//Típusok és szűrőfeltételek beállítása
 			caParticipantType pt = caParticipantType.UserOrGroup;
 			caRecordStatus ps = caRecordStatus.Active;
 			string s = txSearch.Text.ToLower();
@@ -146,6 +154,7 @@ namespace caClient.Controls
 					delegate(caParticipantObject po)
 					{
 						//bool sel = true;
+						//Teljes feltétel megadása mindenre
 						if (!pt.Equals(caParticipantType.UserOrGroup) && !pt.Equals(po.m_type)) return false;
 						if (!ps.Equals(po.m_status)) return false;
 						if (!String.IsNullOrEmpty(s) && !po.m_foreignId.ToLower().Contains(s) && !po.m_name.ToLower().Contains(s) && !po.m_participantId.ToLower().Contains(s)) return false;
@@ -158,12 +167,14 @@ namespace caClient.Controls
 			dgParticipant.Refresh();
 		}
 
+		//Megjelenítési módtól függően milyen vezérlők látszódjanak
 		public void DisplayTypeSelect(bool _visible)
 		{
 			cbType.Visible = _visible;
 			lbType.Visible = _visible;
 		}
 
+		//Dupla kattintás eseménykiváltója
 		private void dg_participant_DoubleClick(object sender, EventArgs e)
 		{
 			try
@@ -173,24 +184,27 @@ namespace caClient.Controls
 			catch (Exception) { }
 		}
 
+		//Státusz legördülő változására szűrés
 		private void cbStatus_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			FilterResults();
 		}
 
+		//Kattintásra eseménykiváltás
 		private void dgParticipant_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right)
 			{
 				try
 				{
-					MouseEventArgs m = new MouseEventArgs(e.Button, 1, e.X+dgParticipant.Left, e.Y + dgParticipant.Top, 0);
+					MouseEventArgs m = new MouseEventArgs(e.Button, 1, e.X + dgParticipant.Left, e.Y + dgParticipant.Top, 0);
 					RowRightClick.Invoke(sender, m);
 				}
 				catch { }
 			}
 		}
 
+		//Résztvevő kiválasztására eseménykiváltás
 		private void dgParticipant_SelectionChanged(object sender, EventArgs e)
 		{
 			try

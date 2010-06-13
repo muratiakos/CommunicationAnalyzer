@@ -5,6 +5,9 @@ using System.Text;
 
 namespace caCoreLibrary
 {
+	/// <summary>
+	/// SQL lekérdezéseket generálós hierarchikus feltételosztály
+	/// </summary>
 	public class caConditionItem
 	{
 		public bool First;
@@ -43,6 +46,7 @@ namespace caCoreLibrary
 		}
 	}
 
+	//Feltételek listája
 	public class caConditionItemList : List<caConditionItem>
 	{
 		public override string ToString()

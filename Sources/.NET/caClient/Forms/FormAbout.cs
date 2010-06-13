@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace caClient.Forms
 {
+	//Névjegy osztálya
 	partial class FormAbout : Form
 	{
 		public FormAbout()

@@ -7,17 +7,23 @@ using System.Collections.Generic;
 
 namespace caClient
 {
+	/// <summary>
+	/// Kliena alkalmazás főablaka
+	/// A párbeszédablakok kivételével mInden további ablak ennek a gyermekeként nyílik meg
+	/// </summary>
 	public partial class FormMain : Form
 	{
 		//Kapcsolódás példánya
 		internal ServiceClient conn = new ServiceClient();
 
+		//Konstruktor
 		public FormMain()
 		{
 			InitializeComponent();
 			caMessageService.NewMessage += new EventHandler(caMessageService_NewMessage);
 		}
 
+		//Új caMessage kiírása az üzenetablkba
 		void caMessageService_NewMessage(object sender, EventArgs e)
 		{
 			foreach (caMessage m in caMessageService.messageQueue)
@@ -28,38 +34,23 @@ namespace caClient
 			}
 		}
 
-		private void OpenFile(object sender, EventArgs e)
-		{
-
-		}
-
+		//KIlépés
 		private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.Close();
 		}
 
-		private void CutToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-		}
-
-		private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-		}
-
-		private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-		}
-
+		//Gyermekablakok kaszkádolt megjelenítése
 		private void CascadeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LayoutMdi(MdiLayout.Cascade);
 		}
-
+		//Függőleges gyermekablak megjelenítés
 		private void TileVerticalToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LayoutMdi(MdiLayout.TileVertical);
 		}
-
+		//Vízszintes gyermekablak megjelenítés
 		private void TileHorizontalToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LayoutMdi(MdiLayout.TileHorizontal);
@@ -69,7 +60,7 @@ namespace caClient
 		{
 			LayoutMdi(MdiLayout.ArrangeIcons);
 		}
-
+		//MInden gyermekablak bezárása
 		private void CloseAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			foreach (Form childForm in MdiChildren)
@@ -77,9 +68,10 @@ namespace caClient
 				childForm.Close();
 			}
 		}
-
+		//Fa menüben egy menüpont megnyitása
 		private void tr_menu_DoubleClick(object sender, EventArgs e)
 		{
+			//Menüpont kiválasztása a neve alapján és a megfelelő ablka példányosítása MDI gyermekablakként
 			if (tvNavigator.SelectedNode != null)
 			{
 				Form f = null;
@@ -110,26 +102,27 @@ namespace caClient
 						break;
 				}
 
-				//Ha nyitottunk újat, akkor belő mindent
+				//Ha nyitottunk újat, akkor a tab-ok közé felvenni
 				if (f != null)
 				{
-					caForm.MakeMDIChild(this,f);
+					caForm.MakeMDIChild(this, f);
 				}
 			}
 		}
 
+		//Ha választunk egy tab-ot, akkor az annak megfelelő MDI gyermekablak jelnjen meg
 		private void Main_MdiChildActivate(object sender, EventArgs e)
 		{
 			if (this.ActiveMdiChild == null)
-				tabWindows.Visible = false; // If no any child form, hide tabControl
+				tabWindows.Visible = false; // Ha nincs semmi, akkor eltűntetni
 			else
 			{
-				//this.ActiveMdiChild.WindowState = FormWindowState.Maximized; // Child form always maximized
+				//this.ActiveMdiChild.WindowState = FormWindowState.Maximized; 
 
-				// If child form is new and no has tabPage, create new tabPage
+				//Ha a gyermek MDI-nek még nem lenne Tabja, akkor létrehozunk egy újat
 				if (this.ActiveMdiChild.Tag == null)
 				{
-					// Add a tabPage to tabControl with child form caption
+					// Tab felvétele az ablak nevével
 					TabPage tp = new TabPage(this.ActiveMdiChild.Text);
 					tp.Tag = this.ActiveMdiChild;
 					tp.Parent = tabWindows;
@@ -143,36 +136,41 @@ namespace caClient
 			}
 		}
 
+		//Gyermekablak bezázása --> Tab megszűntetése
 		private void ActiveMdiChild_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			((sender as Form).Tag as TabPage).Dispose();
 		}
 
+		//Gyermekablakot választunk --> Akkor a Tab is kiválasztódik
 		private void tabForms_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if ((tabWindows.SelectedTab != null) && (tabWindows.SelectedTab.Tag != null))
 				(tabWindows.SelectedTab.Tag as Form).Select();
 		}
 
-
+		//Kliens indításakor a kapcsolódás ablak automatikusan felnyílik
 		private void Main_Load(object sender, EventArgs e)
 		{
 			FormConnect frmC = new FormConnect(this, conn);
 			caForm.MakeMDIChild(this, frmC);
 		}
 
+		//Új üzenet hozzáadása az azüneteablakhoz
 		public void AddMessage(String _text)
 		{
 			lvMessageList.Items.Add(_text);
 		}
 
+		//Csatlakozás kezelő eljárás
 		public void OnlineControl(ServiceClient _c)
 		{
 			try
 			{
 				conn = _c;
-				if (conn.State == System.ServiceModel.CommunicationState.Opened)
+				if (conn.State == System.ServiceModel.CommunicationState.Opened) //Ha a kapcsolat nyitva van
 				{
+					//Menü engedélyezés és lenyitás					
 					tvNavigator.Nodes[0].Text = conn.Endpoint.Address.ToString() + " - " + conn.State.ToString();
 					//AddMessage(conn.Connect());
 					tvNavigator.ExpandAll();
@@ -180,6 +178,7 @@ namespace caClient
 
 					try
 					{
+						//Címkék letöltésének megkísérlése
 						caClientService.LoadTagList(conn);
 						caMessageService.Add(new caMessage() { text = "Tags successfully downloaded" });
 
@@ -192,6 +191,7 @@ namespace caClient
 				}
 				else
 				{
+					//Ha mégsincs nyitva a kapcsolat, akkor menü összecsukása és letiltása
 					tvNavigator.CollapseAll();
 					tvNavigator.Enabled = false;
 				}
@@ -199,11 +199,12 @@ namespace caClient
 			catch { }
 		}
 
+		//MInden üzenet törlés gombnyomásra
 		private void btMessageClear_Click(object sender, EventArgs e)
 		{
 			lvMessageList.Clear();
 		}
-
+		//Üzenetek lekérdezése a szervertől gombnyomásra
 		private void btServerMsg_Click(object sender, EventArgs e)
 		{
 			List<caMessage> ml = new List<caMessage>();
@@ -222,13 +223,13 @@ namespace caClient
 				caMessageService.Add(new caMessage() { text = "Unable to download Messages from server", type = caMessageType.Error });
 			}
 		}
-
+		//Kattintás a névjegy menüre
 		private void helpMenu_Click(object sender, EventArgs e)
 		{
 			FormAbout about = new FormAbout();
 			about.ShowDialog();
 		}
-
+		//Kattintás a WSDL letöltés menüre
 		private void searchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			System.Diagnostics.Process.Start("http://localhost:8511/caService?wsdl");

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 
 namespace caCoreLibrary
 {
+	//Kézebsítési módok
 	public enum caCommSubCategory
 	{
 		TO, CC, BCC
 	}
 
+	//Csatorna típusa
 	public enum caCommCategory
 	{
 		Unknown = -1,
@@ -16,14 +18,14 @@ namespace caCoreLibrary
 		Text = 2
 	}
 
+	//Kézbesítés alaposztálya
 	public class caSubCommItem
 	{
 		//Változók
-		
 		public string m_subcommId;
 		public string m_commId;
 		public int m_times = 1;
-		
+
 		public caCommCategory m_category = caCommCategory.Email;
 		public caCommSubCategory m_subcategory = caCommSubCategory.TO;
 
@@ -40,6 +42,8 @@ namespace caCoreLibrary
 
 		//Konstruktorok
 		public caSubCommItem() { }
+
+		//Másoló konstruktor
 		public caSubCommItem(caSubCommItem _ci)
 		{
 			m_category = _ci.m_category;
@@ -56,8 +60,10 @@ namespace caCoreLibrary
 		}
 	}
 
+	//Kézbesítések listája
 	public class caSubCommItemList : List<caSubCommItem> { }
 
+	//Kézbesítés objektum megjelnítést segítő metódusokkal
 	public class caSubCommItemObject : caSubCommItem
 	{
 		//Változók
@@ -73,9 +79,13 @@ namespace caCoreLibrary
 			m_toParticipant = new caParticipantObject(_ci.m_toParticipant);
 		}
 	}
+
+	//Kézbesítés objektumlista
 	public class caSubCommItemObjectList : List<caSubCommItemObject>
 	{
 		//Statikusok
+
+		//Listából megjelníthető kézbesítési lista létrehozása
 		public static caSubCommItemObjectList CreateCommItemObjectList(caSubCommItemList cil)
 		{
 			//Builder mechanism
@@ -103,6 +113,7 @@ namespace caCoreLibrary
 		public caSubCommItemObjectList() { }
 
 		//Eljárások
+		//Új elem hozzáadása, csak akkor, ha az még nincs a listában
 		public caSubCommItemObject AddIdentical(caSubCommItemObject _new)
 		{
 			caSubCommItemObject _old = null;

@@ -7,22 +7,32 @@ using System.Windows.Forms;
 
 namespace caClient.Forms
 {
+	/// <summary>
+	/// Résztvevő-Téma kapcsolat elemző kliens osztály
+	/// </summary>
 	public partial class FormTagParticipantRelationAnalysis : Form
 	{
 
+		//Kapcsolat objektum
 		ServiceClient conn = null;
+		//SQL lekérdezés példánya
 		String querySql = null;
 
+		//Eredményhalmaz osztálya
 		public List<caTagParticipantAnalysisResult> queryResults = new List<caTagParticipantAnalysisResult>();
+		//Résztvevpk gyorsítótárazott listája
 		public caParticipantObjectList participantList = new caParticipantObjectList();
+		//Ábrázolásra alkalmas adatok objektuma
 		public caSubCommItemObjectList subcommList = new caSubCommItemObjectList();
 
+		//KOnstruktor a kapcsolat átvételével a főablaktól
 		public FormTagParticipantRelationAnalysis(ServiceClient _conn)
 		{
 			InitializeComponent();
 			conn = _conn;
 		}
 
+		//SQL lekérdezés generálása az úrlap beállításai alapján
 		public string GenerateQueryFromSearchOptions()
 		{
 			/*
@@ -42,7 +52,7 @@ namespace caClient.Forms
 			//PF = from, PT = to, SC = subcomm
 
 
-
+			//Lekérdezést állandó részei
 			String qHeader = "SELECT COUNT(T.TAG_ID) TIMES,  T.TAG_ID, PF.PARTICIPANT_ID FROM_ID, PF.primary_group FROM_GROUP, PT.PARTICIPANT_ID TO_ID, PT.primary_group TO_GROUP";
 			String qFrom = "FROM cad_participant PF, cad_participant PT, cad_subcomm SC, cad_tag T";
 			String qWhereSys = "WHERE";
@@ -51,15 +61,14 @@ namespace caClient.Forms
 			String qGroupUser = "HAVING count(T.TAG_ID)>" + numWeight.Value.ToString();
 
 
+			//Hierarchikus felételrendszer összeállítása
 			caConditionItem c = new caConditionItem("AND", "()");
 			c.First = true;
 			c.SubCondition.Add(new caConditionItem("AND", "(SC.from_participant = PF.participant_id and SC.to_participant = PT.participant_id and SC.COMM_ID = T.COMM_ID)"));
 			c.SubCondition.Add(new caConditionItem("AND", "SC.DATE_KEY BETWEEN " + searchForm.After.ToString("yyyyMMdd") + " AND " + searchForm.Before.ToString("yyyyMMdd")));
 
 
-
-
-			//Expand group
+			//Csoport kibontása
 			caParticipantObjectList expFrom = searchForm.FromList;
 			caParticipantObjectList expTo = searchForm.ToList;
 
@@ -73,7 +82,7 @@ namespace caClient.Forms
 			caConditionItem cPart = new caConditionItem("AND", "()");
 			if (!searchForm.AmongFromTo)
 			{
-				//Közöttük bárhogy OR
+				//Közöttük bárhogy lehet kapcsolat - OR
 
 				caConditionItem cFrom = new caConditionItem("OR", "()");
 				foreach (caParticipantObject po in expFrom)
@@ -141,19 +150,18 @@ namespace caClient.Forms
 
 			qWhereUser = c.ToString();
 
+			//Lekérdezés részeinek összefűzése
 			return qHeader + " " + qFrom + " " + qWhereSys + " " + qWhereUser + " " + qGroupSys + " " + qGroupUser;
 		}
 
+		//Lekérdezés indítása és eredmények lekérdezése a szerverről
 		private void GenerateResultsFromQuery(String _querySql)
 		{
 			queryResults.Clear();
 			dgResults.DataSource = null;
-			//dg_results.Invalidate();
 
 			try
 			{
-				//caDatabaseService dm = new caDatabaseService();
-				//queryResults = dm.GetTagParticipantRelationAnalysisResultList(_querySql);
 				queryResults = caClientService.GetTagParticipantAnalysisResultList(conn, _querySql);
 				dgResults.DataSource = queryResults;
 
@@ -167,6 +175,7 @@ namespace caClient.Forms
 			}
 		}
 
+		//Ábrázolható osztály generálása az eredményhalmaz alapján		
 		private void GenerateCommModelFromResults(List<caTagParticipantAnalysisResult> rl)
 		{
 			foreach (caTagParticipantAnalysisResult r in rl)
@@ -178,6 +187,7 @@ namespace caClient.Forms
 				//caParticipantObject from = participantList.AddIdentical(_from);
 				//caParticipantObject to = participantList.AddIdentical(_to);
 
+				//Résztvevő cache-ből vagy lekérdezés a szerverről
 				caParticipantObject from = caClientService.UseOrLoadParticipant(conn, participantList, r.m_fromId);
 				caParticipantObject to = caClientService.UseOrLoadParticipant(conn, participantList, r.m_toId);
 
@@ -199,16 +209,20 @@ namespace caClient.Forms
 			}
 		}
 
+		//Eredmény kirájzolása gráfként
 		private void DrawGraphFromCommModel()
 		{
 			caTagParticipant1.m_commItemObjectList = subcommList;
 			caTagParticipant1.createGraph();
 		}
+
+		//Listák frissítése a gyorsítótár alapján
 		private void RefreshCacheUI()
 		{
 			ptCache.ParticipantList = participantList;
 		}
 
+		//Keresés gombra kattintás
 		private void bt_search_Click(object sender, EventArgs e)
 		{
 			//Query összeállítás és kiírás
@@ -228,6 +242,7 @@ namespace caClient.Forms
 			DrawGraphFromCommModel();
 		}
 
+		//Lekérdezés gombra kattintás - egyedi lekérdezéskhez is
 		private void btQuery_Click(object sender, EventArgs e)
 		{
 			//SAját query futtatása kírása és cache
@@ -237,32 +252,38 @@ namespace caClient.Forms
 			//Manuális innentől
 		}
 
+		//Eredméynhalmazból --> ábrázolható objektum manuálisan
 		private void btCreateCommModel_Click(object sender, EventArgs e)
 		{
 			GenerateCommModelFromResults(queryResults);
 		}
 
+		//Irányítottság ki- és bekapcsolása a gráfon
 		private void chkDirection_CheckedChanged(object sender, EventArgs e)
 		{
 			caTagParticipant1.ShowDirection = chkDirection.Checked;
 			caTagParticipant1.createGraph();
 		}
 
+		//Csak csoportok megjelnítése -  gomb
 		private void btGroupsOnly_Click(object sender, EventArgs e)
 		{
 			caTagParticipant1.DisplayAllNodeAs(caRelationGraphNodeTypeDisplayMode.GroupsOnly);
 		}
 
+		//Csak felhasználók megjelenítése gomb
 		private void btUsersOnly_Click(object sender, EventArgs e)
 		{
 			caTagParticipant1.DisplayAllNodeAs(caRelationGraphNodeTypeDisplayMode.UsersOnly);
 		}
 
+		//Manuális újrarajzolás gombja
 		private void btRedraw_Click(object sender, EventArgs e)
 		{
 			DrawGraphFromCommModel();
 		}
 
+		//Keresés indítása
 		private void btSearch_Click(object sender, EventArgs e)
 		{
 			//Query összeállítás és kiírás

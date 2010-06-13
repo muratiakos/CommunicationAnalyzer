@@ -5,9 +5,12 @@ using System.Text;
 
 namespace caCoreLibrary
 {
-	//Metódusok
+	/// <summary>
+	/// Osztályok közötti konvertálást végző modul
+	/// </summary>
 	public class caConvert
 	{
+		//Adatbázis ezőtípusból cast-ol stringet, NULL érték lehetséges
 		public static string DBTypeToString(object o, bool canBeNull)
 		{
 			String retVal;
@@ -22,17 +25,20 @@ namespace caCoreLibrary
 			return retVal;
 		}
 
+		//Adatbázis ezőtípusból cast-ol stringet, NULL érték nem lehet
 		public static string DBTypeToString(object o)
 		{
 			return DBTypeToString(o, false);
 		}
 
+		//Stringből - bool
 		public static bool StringToBool(string s)
 		{
 			if (s.Equals("0")) return false;
 			else return true;
 		}
 
+		//Csatorna azonosítóból csatorna enumeráció konvertálás
 		public static caCommCategory StringToCategory(string s)
 		{
 			caCommCategory cc = caCommCategory.Unknown;
@@ -44,6 +50,7 @@ namespace caCoreLibrary
 			return cc;
 		}
 
+		//Stringből Résztvevő típuskód enumeráció
 		public static caParticipantType StringToParticipantType(string s)
 		{
 			caParticipantType pt = caParticipantType.UserOrGroup;
@@ -55,6 +62,7 @@ namespace caCoreLibrary
 			return pt;
 		}
 
+		//Stringből Rekordstátusz enumeráció
 		public static caRecordStatus StringToRecordStatus(string s)
 		{
 			caRecordStatus ps = caRecordStatus.Unknown;
@@ -66,6 +74,7 @@ namespace caCoreLibrary
 			return ps;
 		}
 
+		//Több messageId-ból csak a legelső kiolvasása
 		public static string ManyToOneMessageId(string Many)
 		{
 			String retVal = Many;

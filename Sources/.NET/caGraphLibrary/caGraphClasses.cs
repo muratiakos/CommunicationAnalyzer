@@ -4,8 +4,10 @@ using Microsoft.Glee.Drawing;
 using System.Collections.Generic;
 using System.Linq;
 
+//Ábrázolásnál használt közös funkciókat magába foglaló megsztott grafikai modul
 namespace caGraphLibrary
 {
+	//Ábrázolási módok
 	public enum caRelationGraphNodeTypeDisplayMode
 	{
 		UsersOnly,
@@ -13,8 +15,10 @@ namespace caGraphLibrary
 		Both
 	}
 
+	//Csomópontok formázásáért felelős osztály
 	public class caNodeFormat
 	{
+		//Formázás felhasználóként
 		public static void FormatAsUser(Node n, caGraphGleeColorService m_colorService)
 		{
 			try { n.Attr.Label = n.Attr.Label.Substring(0, 12) + "\n..."; }
@@ -25,6 +29,7 @@ namespace caGraphLibrary
 			n.Attr.Shape = Microsoft.Glee.Drawing.Shape.Circle;
 		}
 
+		//Formázás csoportként
 		public static void FormatAsGroup(Node n, caGraphGleeColorService m_colorService)
 		{
 			try { n.Attr.Label = n.Attr.Label.Substring(0, 14) + "\n..."; }
@@ -34,6 +39,7 @@ namespace caGraphLibrary
 			n.Attr.Shape = Microsoft.Glee.Drawing.Shape.DoubleCircle;
 		}
 
+		//Formázás témaként
 		public static void FormatAsTag(Node n, caGraphGleeColorService m_colorService)
 		{
 			n.Attr.LabelMargin = 3;
@@ -45,11 +51,15 @@ namespace caGraphLibrary
 		}
 	}
 
+	/// <summary>
+	/// Színek kiosztásáért felelős osztály
+	/// </summary>
 	public class caGraphGleeColorService
 	{
-
+		//Alapszín = átlátszó szín	
 		public static Microsoft.Glee.Drawing.Color baseColor = Microsoft.Glee.Drawing.Color.Transparent;
 
+		//Színek osztálya
 		public class caGraphGleeColor
 		{
 			public Microsoft.Glee.Drawing.Color color;
@@ -61,8 +71,10 @@ namespace caGraphLibrary
 				available = true;
 			}
 		}
+		//Színeket tartalmazó lista
 		List<caGraphGleeColor> emaGraphPalette = new List<caGraphGleeColor>();
 
+		//Színlista inicializálása
 		public caGraphGleeColorService()
 		{
 			emaGraphPalette.Add(new caGraphGleeColor(Microsoft.Glee.Drawing.Color.Gray));
@@ -128,6 +140,7 @@ namespace caGraphLibrary
 
 		}
 
+		//Már használt színek felszabadítása
 		public void removeObsoloteColor(Microsoft.Glee.Drawing.Color c)
 		{
 			try
@@ -140,6 +153,7 @@ namespace caGraphLibrary
 			catch { }
 		}
 
+		//Új szín kiosztása és lefoglalása a színtáblázatban LINQ-val
 		public Microsoft.Glee.Drawing.Color getNewColor()
 		{
 			caGraphGleeColor c = new caGraphGleeColor(baseColor);

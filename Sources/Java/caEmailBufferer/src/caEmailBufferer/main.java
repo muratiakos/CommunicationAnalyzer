@@ -5,34 +5,38 @@ import java.util.Calendar;
 import java.io.*;
 
 /**
- * E-mail Bufferer futtató osztálya
+ * caEmailBufferer futtató osztálya, amely egy mabbában található e-mail fájlokat betölt a rendszer puffertáblájába
  * 
- * @author makos
+ * @author Muráti Ákos
  */
 public class main {
-
+    //beszédes mód
     static boolean verbose = false;
 
     /**
-     * <p>Az EmailFileImporter indító függvénye, ez példányosítja a pufferelést végző
+     * <p>A caEmailBufferer indító függvénye, ami példányosítja a pufferelést végző
      * osztályt a parancssori paraméterek és a beolvasott property-fájl alapján.</p>
      *
      * <h2>Parancssori paraméterek</h2>
      * <ul>
      *  <li>-property [fájlnév] : megadott fájlnevű property fájl beolvasása és alkalmazása</li>
-     *  <li>-folder [mappa]: a megadott mappában található fájlok beolvasása</li>
+     *  <li>-mail_folder [mappa]: a megadott mappában található fájlok beolvasása</li>
+     *  <li>-delete_buffered: Sikeresen pufferelt emailek törlése</li>
+     *  <li>-verbose: Beszédes mód, futás közbeni statisztikai és egyéb vezérlési infók kiírása</li>
      * </ul>
-     * <p>A parancssorban megadott beállítások a legerősebbek, vagyis felülbírálják a property fájlok és az alapértelmezett
+     * <p>A parancssorban megadott beállítások felülbírálják a property fájlokat és az alapértelmezett
      * beállításokat</p>
      *
      * <h2>Alapértelmezett property</h2>
      * <pre>
      * db_driver=oracle.jdbc.driver.OracleDriver
-     * db_url=jdbc\:oracle\:thin\:@grid9.tmit.bme.hu\:1521\:student
-     * db_user=mailer
-     * db_pass=haho
-     * mail_insert=INSERT INTO MAIL_BUFFER (BUFFERID, MAIL, PROCESSED) VALUES ( ?, ?, 0)
-     * mail_folder=../mail_folder/
+     * db_url=jdbc:oracle:thin:@localhost:1521:XE
+     * db_user=EMA_ADMIN
+     * db_pass=ema_admin
+     * mail_insert=INSERT INTO CAD_RAWDATA (BUFFER_ID, DATA, STATUS) VALUES ( ?, ?, 0)
+     * mail_folder=../Mails/
+     * delete_buffered=0
+     * verbose=0
      * </pre>
      *
      * 
@@ -55,14 +59,14 @@ public class main {
         pd.setProperty("delete_buffered", "0"); //-mail_folder "D:\BME\Önálló labor\8. félév\_JavaSource\email"
         pd.setProperty("verbose", "0"); //-mail_folder "D:\BME\Önálló labor\8. félév\_JavaSource\email"
 
+        //Property osztály és egyéb futásidejű osztály példányosítása
         Properties pf = new Properties(pd);
-
         Calendar cal = Calendar.getInstance();
         String mail_folder = null;
         String property_file = null;
         boolean deleteBufferedFile = false;
 
-        //Argumentumok feldolgozasa
+        //Argumentumok feldolgozása parancssorból
         int i = 0;
         for (i = 0; i < aArgs.length; i++) {
             if (aArgs[i].equals("-mail_folder")) {
@@ -98,13 +102,14 @@ public class main {
             VP("-PROPERTY: Verbose MODE is ON");
         }
 
+        //E-mail mappa felüldefiniálása
         if (mail_folder != null && mail_folder.isEmpty() == false) //ha ki lett toltve parancssorbol
         {
             pf.setProperty("mail_folder", mail_folder); //fajlbeli propertyt felülvágja
             VP("-PROPERTY: Mail folder has set from command-line: " + mail_folder);
         }
 
-        //Delete felüldefiniálása
+        //Törlési mód felüldefiniálása
         if (pf.getProperty("delete_buffered", "1").equals("1")) //ha ki lett toltve konfigfájlból
         {
             deleteBufferedFile = true; //fajlbeli propertyt felülvágja
@@ -112,14 +117,15 @@ public class main {
         }
 
         VP("");
-        //Feldolgozás méréséhez
+        //Statisztikához aktuális időpillanat lekérdezése
         cal = Calendar.getInstance();
         long tStart = cal.getTimeInMillis();
 
-        //Importer példányosítása és futtatása
+        //A Fájl Importer példányosítása, ami a mappa végigolvasásáért felelős
         EmailFileImporter efi = new EmailFileImporter(pf);
         int rV = efi.Import(deleteBufferedFile);
 
+        //Befejezés időpillanatának lekérdezése és delt a számítása
         cal = Calendar.getInstance();
         long tStop = cal.getTimeInMillis();
         tStop -= tStart;
@@ -137,7 +143,7 @@ public class main {
     }
 
     /**
-     * Feltételes kiíratás, ha beszédes módban vagyunk
+     * Feltételes kiíratás eljárása, ha beszédes módban vagyunk, kiírja az átadott szöveget.
      * @param _out Kiírandó szöveg
      */
     public static void VP(String _out) {

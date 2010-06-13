@@ -6,19 +6,23 @@ using System.Collections.Generic;
 
 namespace caDataAccessLayer
 {
+	/// <summary>
+	/// Adatbázis specifikus eljárások és függvények gyűjteménye
+	/// Ez a modul fordítja le a magaszintű kéréseket az adatbázis szintjére
+	/// </summary>
 	public class caDatabaseService
 	{
-		//Változók
+		//Adatbázis kapcsolati objektum
 		private OracleConnection conn;
 
-		//Konstruktor - destruktor
+		//Konstruktor - kapcsolat felépítés
 		public caDatabaseService()
 		{
 			String[] dbParams = new String[5];
 
-
 			try
 			{
+				//Kapcsolat felépítés
 				dbParams[0] = Properties.Settings.Default.dbHost;
 				dbParams[1] = Properties.Settings.Default.dbPort;
 				dbParams[2] = Properties.Settings.Default.dbSID;
@@ -38,6 +42,8 @@ namespace caDataAccessLayer
 				caMessageService.AddException("constructor", ex);
 			}
 		}
+
+		//Destruktor- kapcsolat bontás
 		~caDatabaseService()
 		{
 			try
@@ -51,7 +57,7 @@ namespace caDataAccessLayer
 			}
 		}
 
-		//Eljárások
+		//DML SQL utasítás végrehajtása, ami visszaadja az érintett sorok számát
 		public int ExecuteNonQuery(String sql)
 		{
 			int retVal = 0;
@@ -73,6 +79,8 @@ namespace caDataAccessLayer
 			return retVal;
 		}
 
+
+		//Résztvevő rekord betöltése
 		public caParticipant LoadParticipantRecord(string _participantId)
 		{
 			caParticipant p = null;
@@ -111,6 +119,7 @@ namespace caDataAccessLayer
 			return p; //.ToArray();
 		}
 
+		//Kapott résztvevő mentése az adatbázisba
 		public caParticipant SaveParticipantRecord(caParticipant actualP)
 		{
 			//Létezik-e?
@@ -156,6 +165,7 @@ namespace caDataAccessLayer
 
 		}
 
+		//Résztvevők listájának beolvasása
 		public List<caParticipant> LoadParticipantRecordList(string query)
 		{
 			List<caParticipant> results = new List<caParticipant>();
@@ -192,6 +202,7 @@ namespace caDataAccessLayer
 			return results;
 		}
 
+		//Tagsági adatok tárolása két résztvevő között
 		public List<caParticipant> SaveParticipantRelationRecordList(String _participantId, List<String> pl, caParticipantType pt)
 		{
 			OracleTransaction txn = conn.BeginTransaction(IsolationLevel.ReadCommitted);
@@ -216,7 +227,7 @@ namespace caDataAccessLayer
 				deleteOld.ExecuteNonQuery();
 				deleteOld.Dispose();
 
-				//Őjak felvétele
+				//Újak felvétele
 				foreach (String p in pl)
 				{
 					OracleCommand insertRelation = new OracleCommand();
@@ -257,6 +268,7 @@ namespace caDataAccessLayer
 			return null;
 		}
 
+		//Kapcsolati háló elemzés lekérdezése az adatbázisból
 		public List<caRelationAnalysisResult> GetParticipantRelationAnalysisResultList(string query)
 		{
 			List<caRelationAnalysisResult> results = new List<caRelationAnalysisResult>();
@@ -298,6 +310,7 @@ namespace caDataAccessLayer
 			return results;
 		}
 
+		//Ügymenet elemzés lekérdezés futtatása
 		public List<caFlowAnalysisResult> GetFlowAnalysisResultList(string query)
 		{
 			List<caFlowAnalysisResult> results = new List<caFlowAnalysisResult>();
@@ -342,6 +355,7 @@ namespace caDataAccessLayer
 			return results;
 		}
 
+		//Résztvevő-téma elemzés lekérdezése az adatbázisból
 		public List<caTagParticipantAnalysisResult> GetTagParticipantRelationAnalysisResultList(string query)
 		{
 			List<caTagParticipantAnalysisResult> results = new List<caTagParticipantAnalysisResult>();
@@ -382,6 +396,7 @@ namespace caDataAccessLayer
 			return results;
 		}
 
+		//Résztvevő elérhetőségeinek lekérdezése
 		public List<caParticipantAddress> LoadParticipantAddressRecordList(String _participantId)
 		{
 			List<caParticipantAddress> addresses = new List<caParticipantAddress>();
@@ -415,6 +430,7 @@ namespace caDataAccessLayer
 			return addresses; //.ToArray();
 		}
 
+		//Résztvevők eléréseinek mentése
 		public bool SaveParticipantAddressRecordList(String _participantID, List<caParticipantAddress> al)
 		{
 			OracleTransaction txn = conn.BeginTransaction(IsolationLevel.ReadCommitted);
@@ -430,7 +446,7 @@ namespace caDataAccessLayer
 				deleteOld.ExecuteNonQuery();
 				deleteOld.Dispose();
 
-				//Őjak felvétele
+				//Újak felvétele
 				foreach (caParticipantAddress a in al)
 				{
 					OracleCommand insertRelation = new OracleCommand();
@@ -465,6 +481,7 @@ namespace caDataAccessLayer
 		}
 
 
+		//Címkézési szabályok listájának lekérdezése
 		public List<caTaggingRule> LoadTaggingRuleRecordList(String _where)
 		{
 			List<caTaggingRule> rules = new List<caTaggingRule>();
@@ -495,6 +512,7 @@ namespace caDataAccessLayer
 			return rules; //.ToArray();
 		}
 
+		//Címkézési szabály mentése
 		public bool SaveTaggingRuleRecord(caTaggingRule tr)
 		{
 			bool success = true;
@@ -542,6 +560,7 @@ namespace caDataAccessLayer
 			return success;
 		}
 
+		//Címkék listájának lekérdezése
 		public List<string> LoadTagList()
 		{
 			List<string> tags = new List<string>();

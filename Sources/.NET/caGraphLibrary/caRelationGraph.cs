@@ -7,24 +7,33 @@ using caCoreLibrary;
 
 namespace caGraphLibrary
 {
+	/// <summary>
+	/// Kapcsolati hálót ábrázoló vezérlő osztály
+	/// </summary>
+
 	public partial class caRelationGraph : UserControl
 	{
+		//Kapcsolati gráf objektuma
 		Graph m_graph;
 
+		//SZínek kiosztásáért felelős osztály
 		caGraphGleeColorService m_colorService = new caGraphGleeColorService();
 
 		//ContextMenu cm = new ContextMenu();
+		//Menü és választott csomópont kezelés
 		ToolTip myTip = new ToolTip();
 		object selectedObjectAttr;
 		object selectedObject;
 
 		public caSubCommItemObjectList m_commItemObjectList = new caSubCommItemObjectList();
 
-
+		//Irányítottság property
 		public bool ShowDirection { get; set; }
+		//Összes élkapacitás számolása
 		double totalCount;
 
 
+		//CSomópont megjelenítési mód
 		public void DisplayAllNodeAs(caRelationGraphNodeTypeDisplayMode mode)
 		{
 			switch (mode)
@@ -49,6 +58,7 @@ namespace caGraphLibrary
 			createGraph();
 		}
 
+		//Csomópontot formázó eljárás a csomópont típusa alapján
 		private void FormatNodePair(caIndirectRelation r)
 		{
 			Node src = m_graph.FindNode(r.srcID) as Node;
@@ -81,6 +91,7 @@ namespace caGraphLibrary
 			}
 		}
 
+		//Élformázó eljárás - arányos vastagítás az összélkapcitáshoz képest
 		private void FormatEdge(Edge v)
 		{
 			v.EdgeAttr.Label = v.UserData.ToString();
@@ -94,6 +105,7 @@ namespace caGraphLibrary
 
 		}
 
+		//Dinamikus menüpont generálás kontextusmenühöz
 		private MenuItem CreateUserMenuItem(Object u, String Text)
 		{
 			MenuItem mu = new MenuItem();
@@ -106,6 +118,7 @@ namespace caGraphLibrary
 
 		}
 
+		//Gráf generálása a kommunikációs modellből
 		public void createGraph()
 		{
 			totalCount = 0;
@@ -118,10 +131,11 @@ namespace caGraphLibrary
 
 			//SimaCOmmItemListből Object List
 
-			//Végigbogarászás
+			//Végigbogarászás az összes kommunikációs tényen
 			foreach (caSubCommItemObject cio in m_commItemObjectList)
 			{
 				//count ++;
+				//Indirekt relációk kibontása (összes UU, UG, GU, GG pár felbontása)
 				List<caIndirectRelation> ir = caIndirectRelation.getIndirectRelation(cio.m_fromParticipant, cio.m_toParticipant);
 
 				foreach (caIndirectRelation r in ir)
@@ -132,8 +146,8 @@ namespace caGraphLibrary
 					try
 					{
 						//g.Directed = ShowDirection;
-
-						if (ShowDirection)
+						//Élek felvétele a modell alpján
+						if (ShowDirection) //Irányított élek
 						{
 							var vk = from e in m_graph.Edges
 									 where e.SourceNode.Attr.Id == r.srcID && e.TargetNode.Attr.Id == r.dstID
@@ -141,7 +155,7 @@ namespace caGraphLibrary
 
 							v = vk.First<Edge>();
 						}
-						else
+						else //Irányítatlan élek
 						{
 							var vk = from e in m_graph.Edges
 									 where
@@ -162,29 +176,33 @@ namespace caGraphLibrary
 						v = m_graph.AddEdge(r.srcID, r.dstID);
 					}
 
+					//Élsúlyozás beállítása
 					if (v.UserData == null) v.UserData = 0;
-
 					v.UserData = (int)v.UserData + cio.m_times;
 					totalCount += cio.m_times;
 
 					//TODO: kiíró motort frissíteni ki-ki: db és összesen db
 
+					//CSomópontok és élek formázása
 					FormatEdge(v);
 					FormatNodePair(r);
 				}
 
 			}
 
-			//Élek utóformázása
+			//Élek utóformázása - arányos élsőlyformázás
 			foreach (Edge e in m_graph.Edges) FormatEdge(e);
 
 			gViewer.Graph = m_graph;
 		}
+
+		//KOnstruktor
 		public caRelationGraph()
 		{
 			InitializeComponent();
 			ShowDirection = true;
 
+			//Tooltip beállítások
 			this.myTip.Active = true;
 			myTip.AutoPopDelay = 5000;
 			myTip.InitialDelay = 1000;
@@ -192,10 +210,12 @@ namespace caGraphLibrary
 
 			//this.gViewer.ContextMenu = cm;
 
+			//Eseménykezelők
 			gViewer.SelectionChanged += new EventHandler(gViewer_SelectionChanged);
 			gViewer.MouseClick += new MouseEventHandler(gViewer_MouseClick);
 		}
 
+		//JObb klikk lekezelése minden csomópontra
 		void gViewer_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (e.Button == System.Windows.Forms.MouseButtons.Right)
@@ -212,6 +232,7 @@ namespace caGraphLibrary
 							break;
 					}
 
+					//Megfelelő menük előhívása
 					if (so != null)
 					{
 						ContextMenu cm = new ContextMenu();
@@ -247,6 +268,7 @@ namespace caGraphLibrary
 				}
 		}
 
+		//Csoport csomópont menüjének kezelése
 		void groupMenuClick(object sender, EventArgs e)
 		{
 			MenuItem actual = (MenuItem)sender;
@@ -260,6 +282,7 @@ namespace caGraphLibrary
 					String code = (String)actual.Tag;
 					caParticipantObject u = (caParticipantObject)actual.Parent.Tag;
 
+					//Menüpontok vezérlői
 					switch (code)
 					{
 						case "show-asG":
@@ -285,6 +308,7 @@ namespace caGraphLibrary
 
 		}
 
+		//Ha más elem van az egérmutató alatt, frissítünk
 		void gViewer_SelectionChanged(object sender, EventArgs e)
 		{
 
@@ -310,6 +334,7 @@ namespace caGraphLibrary
 			{
 				selectedObject = gViewer.SelectedObject;
 				mutat.Text = "";
+				//Él esetében
 				if (selectedObject is Edge)
 				{
 					selectedObjectAttr = (gViewer.SelectedObject as Edge).Attr.Clone();
@@ -322,32 +347,20 @@ namespace caGraphLibrary
 					this.gViewer.SetToolTip(this.myTip, mutat.Text);
 
 				}
-				else if (selectedObject is Node)
+				else if (selectedObject is Node) //csomópont esetében
 				{
 					selectedObjectAttr = (gViewer.SelectedObject as Node).Attr.Clone();
 					(selectedObject as Node).Attr.Color = Microsoft.Glee.Drawing.Color.Red;
 					(selectedObject as Node).Attr.Fontcolor = Microsoft.Glee.Drawing.Color.Red;
-					
+
 
 					caParticipantObject po = (caParticipantObject)(selectedObject as Node).UserData;
-					mutat.Text =(selectedObject as Node).Attr.Label;
+					mutat.Text = (selectedObject as Node).Attr.Label;
 					this.gViewer.SetToolTip(myTip, po.ToString());
 				}
 				//mutat.Text = selectedObject.ToString();
 			}
 			gViewer.Invalidate();
 		}
-
-		private void gViewer_Load(object sender, EventArgs e)
-		{
-
-		}
-
-		private void emaRelationGraph_Load(object sender, EventArgs e)
-		{
-
-		}
-
-
 	}
 }

@@ -4,8 +4,8 @@ import java.util.*;
 import java.io.*;
 
 /**
- * <p>Rekurzív fájllistázásért felelő függvény egy mappán belül</p>
- * <p>Esetleg érdemes lehet még kiterjesztésekre való szírést is beleépíteni
+ * <p>Rekurzív fájllistázásért felelős osztály</p>
+ * <p>Egy mappán belüli összes fájl összegyűjtése egy Lista objektumba
  * <br />
  * Forrás: javapractices.com / Alex Wong
  * </p>

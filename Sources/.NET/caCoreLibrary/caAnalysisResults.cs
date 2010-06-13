@@ -4,6 +4,12 @@ using System.Runtime.Serialization;
 
 namespace caCoreLibrary
 {
+	/// <summary>
+	/// ELemzési eredmények osztályát tartalmazó modul
+	/// </summary>
+
+
+	//Kapcsolati háló elemzés eredménye
 	[DataContract]
 	public class caRelationAnalysisResult
 	{
@@ -42,6 +48,7 @@ namespace caCoreLibrary
 		public string To_Group { get { return m_toGroup; } }
 	}
 
+	//Ügymenet elemzés eredményosztálya
 	[DataContract]
 	public class caFlowAnalysisResult
 	{
@@ -83,6 +90,7 @@ namespace caCoreLibrary
 		public string To_User_Name { get { return m_toName; } }
 	}
 
+	//Résztvevő-téma elemzés eredményosztálya
 	[DataContract]
 	public class caTagParticipantAnalysisResult
 	{
