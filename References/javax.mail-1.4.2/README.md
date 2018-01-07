@@ -8,7 +8,7 @@ the open-source Common Development and Distribution License
 
 ## Oracle - JavaMail API
 For new projects, please use the latest version distributed
-as the Oracle JavaMail API libraries from 
+as the Oracle JavaMail API libraries from
 http://www.oracle.com/technetwork/java/javamail/index.html
 
 JavaMail gitbub open-source project:
