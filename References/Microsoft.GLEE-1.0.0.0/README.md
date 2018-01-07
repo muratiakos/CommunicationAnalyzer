@@ -1,7 +1,8 @@
-# Microsoft Research - Graph Layout EnginE
+# Microsoft Research - Graph Layout EnginE (GLEE)
 This folder contains the referenced original v1.0 versions of 
-the former Microsoft Research Graph Layout EnginE (MS GLEE) -
-later changed to Microsoft Automatic Graph Layout (MS AGL).
+the former Microsoft Research `Graph Layout EnginE`
+(`Microsoft.GLEE`) later changed to Microsoft
+`Automatic Graph Layout` (`AGL`).
 
 Since the original v1.0 libraries are no longer available,
 you can use the references here, but for new projects,
