@@ -2,4 +2,19 @@
 This folder contains my written thesis and its document
 resources in various formats.
 
-<p  style=" margin: 12px auto 6px auto; font-family: Helvetica,Arial,Sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 14px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; display: block;">   <a title="View Analysis of Corporate Communication (Hungarian) on Scribd" href="https://www.scribd.com/doc/177533131/Analysis-of-Corporate-Communication-Hungarian#from_embed"  style="text-decoration: underline;" >Analysis of Corporate Communication (Hungarian)</a> by <a title="View Ákos Muráti's profile on Scribd" href="https://www.scribd.com/user/239116412/Akos-Murati#from_embed"  style="text-decoration: underline;" >Ákos Muráti</a> on Scribd</p><iframe class="scribd_iframe_embed" title="Analysis of Corporate Communication (Hungarian)" src="https://www.scribd.com/embeds/177533131/content?start_page=1&view_mode=scroll&access_key=key-2h5x537j8hvyx8jd60c8&show_recommendations=false" data-auto-height="true" data-aspect-ratio="0.7080062794348508" scrolling="no" id="doc_48231" width="null" height="null" frameborder="0"></iframe><script type="text/javascript">(function() { var scribd = document.createElement("script"); scribd.type = "text/javascript"; scribd.async = true; scribd.src = "https://www.scribd.com/javascripts/embed_code/inject.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(scribd, s); })();</script>
+<a title="View Analysis of Corporate Communication (Hungarian) on Scribd" href="https://www.scribd.com/doc/177533131/Analysis-of-Corporate-Communication-Hungarian#from_embed">
+Analysis of Corporate Communication (Hungarian)</a>
+
+<iframe class="scribd_iframe_embed" title="Analysis of Corporate Communication (Hungarian)" src="https://www.scribd.com/embeds/177533131/content?start_page=1&view_mode=scroll&access_key=key-2h5x537j8hvyx8jd60c8&show_recommendations=false" data-auto-height="true" data-aspect-ratio="0.7080062794348508" scrolling="no" id="doc_48231" width="null" height="null" frameborder="0">
+</iframe>
+
+<script type="text/javascript">
+(function() {
+    var scribd = document.createElement("script");
+    scribd.type = "text/javascript";
+    scribd.async = true;
+    scribd.src = "https://www.scribd.com/javascripts/embed_code/inject.js";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(scribd, s);
+})();
+</script>
