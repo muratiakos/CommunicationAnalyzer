@@ -1,8 +1,10 @@
 # Analysis of corporate communication
 `Analysis of corporate communication` is my thesis work
-which - in addition to strategic and analytical overviews -
-designs and implements a dedicated Business Intelligence
-system for analyzing various communication channels.
+which - in addition to strategic and analytical overviews
+about Business Intelligence solutions - designs and
+implements a dedicated BI
+system for analyzing various communication channels in a
+corporate environment.
 
 The system uses `Oracle DB` and `Oracle BI` with a custom
 designed star-scheme for `OLAP` to support the `.NET WCF`
