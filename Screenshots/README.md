@@ -1,0 +1,1 @@
+# Communication Analyzer System - Screenshots
