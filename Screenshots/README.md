@@ -21,21 +21,25 @@ You can also drill into details within a `group` or in a `topic` to see more det
 ![Weighted visualization for User-to-user communication](./analysis-participant_relation_result_user_indirect.png)
 
 Including a `timeline` based thread view for full message history:
+
 ![Conversation timeline and thread visualization](./analysis-flow_relation_analysis.png)
 
 
 ### Other configuration screens
 The following screens demonstrate the basic maintenance and configuration views for the Communication analyzer client and
 server.
+
 ![Communication Analyzer client connection](./main-connection.png)
 
 #### Participant search view
 The current implementation of this service doesn't integrate with
 standard directory services (eg: AD or Google Apps Groups) yet.
+
 ![Participant search view for communication analysis](./main-participant_selection.png)
 
 Multiple addresses can be assigned to same entities for better recognition and analysis both from the UI with mass-replace tools
 or via other service connectors and integrators.
+
 ![Mass participant editor tool for Communication analysis system](./participant_mgmt-replace_tool.png)
 ![Multiple e-mail address assignments](./participant_mgmt-multiple_addresses.png)
 ![Detailed Communication Participant view](./participant_mgmt-participant_form.png)
